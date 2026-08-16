@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>บริการของเรา | THD. BEAUTY &amp; STUDIO — ต่อขนตา &amp; นวด</title>
+<meta name="description" content="รายการบริการต่อขนตา (Classic, Volume, Hybrid) และนวด (ไทย, น้ำมัน, ผ่อนคลาย) พร้อมราคาและระยะเวลา จองล่วงหน้าออนไลน์" />
+<meta name="robots" content="index, follow" />
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='48' fill='%234CA5A0'/><text x='50' y='66' font-size='52' text-anchor='middle'>✿</text></svg>" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&family=Noto+Sans+Thai:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+<header class="header">
+  <div class="container nav">
+    <a href="index.html" class="logo"><span class="logo-mark">✿</span><span>THD. BEAUTY &amp; STUDIO</span></a>
+    <nav>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="services.html" class="active">Services</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="contact.html">Contact</a></li>
+        <li><a href="booking.html" class="btn btn-primary">จองบริการ</a></li>
+      </ul>
+    </nav>
+    <button class="nav-toggle" id="navToggle" aria-label="เมนู">☰</button>
+  </div>
+</header>
+
+<section class="page-head">
+  <div class="container">
+    <span class="eyebrow">Our Services</span>
+    <h1>บริการของเรา</h1>
+    <p>ต่อขนตาและนวดผ่อนคลาย แบบนัดหมายถึงที่ ทางร้านจะโทรกลับเพื่อยืนยันรายละเอียดอีกครั้ง</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="tabs" id="tabs">
+      <button class="tab active" data-filter="all">ทั้งหมด</button>
+      <button class="tab" data-filter="lash">ต่อขนตา</button>
+      <button class="tab" data-filter="massage">นวด</button>
+    </div>
+
+    <div id="servicesGrid" class="catalog-grid">
+      <div class="loader"><div class="spinner"></div>กำลังโหลดรายการบริการ...</div>
+    </div>
+
+    <div style="text-align:center; margin-top:44px;">
+      <a href="booking.html" class="btn btn-primary btn-lg">จองบริการเลย</a>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="container footer-grid">
+    <div>
+      <a href="index.html" class="logo"><span class="logo-mark">✿</span><span>THD. BEAUTY &amp; STUDIO</span></a>
+      <p style="margin-top:14px; font-size:14.5px;">บริการต่อขนตาและนวดแบบนัดหมายถึงที่ เพื่อความสวยและการผ่อนคลายในแบบของคุณ</p>
+    </div>
+    <div>
+      <h4>เมนู</h4>
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="services.html">Services</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>บริการ</h4>
+      <ul>
+        <li><a href="services.html">ต่อขนตา</a></li>
+        <li><a href="services.html">นวดผ่อนคลาย</a></li>
+        <li><a href="status.html">ตรวจสอบสถานะ</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>ติดต่อ</h4>
+      <ul>
+        <li>โทร: <a href="tel:08X-XXX-XXXX">08X-XXX-XXXX</a></li>
+        <li>LINE: <a href="https://line.me/R/ti/p/@eyesbeauty" target="_blank" rel="noopener">@eyesbeauty</a></li>
+        <li>Facebook: <a href="https://www.facebook.com/people/THD-Beauty-Studio/61593494246633/" target="_blank" rel="noopener">THD Beauty Studio</a></li>
+        <li>เวลาทำการ: นัดหมายล่วงหน้า</li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div class="container">© <span class="year"></span> THD. BEAUTY &amp; STUDIO — ต่อขนตา &amp; นวด นัดหมายถึงที่</div>
+  </div>
+</footer>
+
+<script src="js/config.js"></script>
+<script src="js/main.js"></script>
+<script>
+/* บริการเริ่มต้น (แสดงถ้ายังไม่ได้เชื่อมต่อ Apps Script หรือเปิดแบบไม่มี URL) */
+const FALLBACK_SERVICES = [
+  { id: 1, category: "lash", name: "Classic Lash", description: "ต่อขนตาแบบเส้นต่อเส้น เน้นความเป็นธรรมชาติ เรียบง่าย แต่สวยคม", duration: "120 นาที", price: 1200 },
+  { id: 2, category: "lash", name: "Volume Lash", description: "ต่อขนตาแบบฟุ้งบาน 2-6 เส้นต่อ 1 เส้นจริง ให้ดวงตาดูกลมโต", duration: "150 นาที", price: 1800 },
+  { id: 3, category: "lash", name: "Hybrid Lash", description: "ผสมผสาน Classic และ Volume ให้ลุคธรรมชาติแต่มีมิติ", duration: "140 นาที", price: 1600 },
+  { id: 4, category: "lash", name: "Lash Removal", description: "ถอดขนตาปลอมอย่างอ่อนโยน ปลอดภัย ไม่ทำร้ายขนตาจริง", duration: "30 นาที", price: 300 },
+  { id: 5, category: "massage", name: "Thai Massage", description: "นวดแผนไทยคลายเส้น คลายกล้ามเนื้อเมื่อยล้า ด้วยเทคนิคดั้งเดิม", duration: "60 นาที", price: 600 },
+  { id: 6, category: "massage", name: "Oil Massage", description: "นวดน้ำมันอโรมาผ่อนคลาย ให้ผิวเนียนนุ่ม และร่างกายปลอดโปร่ง", duration: "60 นาที", price: 700 },
+  { id: 7, category: "massage", name: "Relaxing Massage", description: "นวดผ่อนคลายความเครียด เหมาะสำหรับผู้ที่ต้องการพักผ่อนเต็มรูปแบบ", duration: "90 นาที", price: 900 },
+  { id: 8, category: "massage", name: "Head & Shoulder Massage", description: "นวดศีรษะและไหล่ คลายความตึงเครียดจากการทำงานหนัก", duration: "30 นาที", price: 400 },
+];
+
+let services = [];
+let currentFilter = "all";
+
+function renderServices() {
+  const grid = document.getElementById("servicesGrid");
+  const filtered = currentFilter === "all"
+    ? services
+    : services.filter(s => s.category === currentFilter);
+
+  if (!filtered.length) {
+    grid.innerHTML = '<div class="empty-state"><span class="icon">🍃</span>ยังไม่มีบริการในหมวดนี้</div>';
+    return;
+  }
+
+  grid.innerHTML = filtered.map(s => {
+    const icon = window.AppConfig.serviceIcons[s.category] || window.AppConfig.serviceIcons.default;
+    const gold = s.category === "massage";
+    const catLabel = s.category === "lash" ? "ต่อขนตา" : "นวด";
+    return `
+    <div class="card catalog-card">
+      <div class="catalog-card-img ${gold ? "catalog-card-img--gold" : ""}">${icon}</div>
+      <div class="catalog-card-body">
+        <span class="cat">${catLabel}</span>
+        <h3>${esc(s.name)}</h3>
+        <p>${esc(s.description)}</p>
+        <div class="catalog-meta">
+          <span class="duration"><span class="icon">🕐</span>${esc(s.duration)}</span>
+          <span class="price-tag">${fmtMoney(s.price)}</span>
+        </div>
+        <a href="booking.html?service=${encodeURIComponent(s.id)}" class="btn btn-primary btn-block">จองบริการ</a>
+      </div>
+    </div>`;
+  }).join("");
+}
+
+async function loadServices() {
+  const grid = document.getElementById("servicesGrid");
+  try {
+    const data = await apiCall("getServices");
+    if (data.services && data.services.length) {
+      services = data.services;
+    } else {
+      services = FALLBACK_SERVICES;
+    }
+  } catch (e) {
+    // ยังไม่ได้ตั้งค่า URL → ใช้ข้อมูลตัวอย่าง
+    console.warn("ใช้ข้อมูลตัวอย่าง:", e.message);
+    services = FALLBACK_SERVICES;
+  }
+  renderServices();
+}
+
+document.getElementById("tabs").addEventListener("click", (e) => {
+  const tab = e.target.closest(".tab");
+  if (!tab) return;
+  document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+  tab.classList.add("active");
+  currentFilter = tab.dataset.filter;
+  renderServices();
+});
+
+loadServices();
+</script>
+</body>
+</html>

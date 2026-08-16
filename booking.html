@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>จองบริการ | THD. BEAUTY &amp; STUDIO — ต่อขนตา &amp; นวด</title>
+<meta name="description" content="ส่งคำขอนัดหมายล่วงหน้า เลือกบริการ วันที่ เวลา และสถานที่ที่สะดวก ทางร้านจะโทรกลับเพื่อยืนยันรายละเอียด" />
+<meta name="robots" content="index, follow" />
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='48' fill='%234CA5A0'/><text x='50' y='66' font-size='52' text-anchor='middle'>✿</text></svg>" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&family=Noto+Sans+Thai:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+<header class="header">
+  <div class="container nav">
+    <a href="index.html" class="logo"><span class="logo-mark">✿</span><span>THD. BEAUTY &amp; STUDIO</span></a>
+    <nav>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="services.html">Services</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="contact.html">Contact</a></li>
+        <li><a href="booking.html" class="btn btn-primary">จองบริการ</a></li>
+      </ul>
+    </nav>
+    <button class="nav-toggle" id="navToggle" aria-label="เมนู">☰</button>
+  </div>
+</header>
+
+<section class="page-head">
+  <div class="container">
+    <span class="eyebrow">Appointment Request</span>
+    <h1>จองบริการ</h1>
+    <p>ส่งคำขอนัดหมายล่วงหน้า — ทางร้านจะโทรกลับเพื่อยืนยันวัน เวลา และสถานที่ให้บริการอีกครั้ง</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container booking-wrap">
+
+    <!-- ========== ฟอร์มจอง ========== -->
+    <div class="card booking-card">
+      <!-- ตัวบอกขั้นตอน -->
+      <div class="steps-indicator" id="stepsIndicator" data-step="1">
+        <div class="step-dot active" data-dot="1"><div class="dot">1</div><span>เลือกบริการ</span></div>
+        <div class="step-dot" data-dot="2"><div class="dot">2</div><span>ข้อมูลลูกค้า</span></div>
+        <div class="step-dot" data-dot="3"><div class="dot">3</div><span>วันที่ &amp; เวลา</span></div>
+        <div class="step-dot" data-dot="4"><div class="dot">4</div><span>สถานที่</span></div>
+        <div class="step-dot" data-dot="5"><div class="dot">5</div><span>ตรวจสอบ</span></div>
+      </div>
+
+      <!-- ขั้น 1: เลือกบริการ -->
+      <div class="form-step" id="step1">
+        <h2 class="step-title">เลือกบริการ</h2>
+        <p class="step-desc">เลือกได้มากกว่า 1 รายการ แล้วแตะ "ถัดไป"</p>
+        <div id="serviceList"><div class="loader"><div class="spinner"></div>กำลังโหลดรายการบริการ...</div></div>
+        <div class="form-nav">
+          <button class="btn btn-primary btn-block" data-next="2">ถัดไป</button>
+        </div>
+      </div>
+
+      <!-- ขั้น 2: ข้อมูลลูกค้า -->
+      <div class="form-step" id="step2" style="display:none;">
+        <h2 class="step-title">ข้อมูลลูกค้า</h2>
+        <p class="step-desc">ทางร้านจะใช้ข้อมูลนี้เพื่อติดต่อยืนยันการนัดหมาย</p>
+        <div class="form-group">
+          <label for="bName">ชื่อ-นามสกุล <span class="req">*</span></label>
+          <input type="text" id="bName" placeholder="เช่น ณัฐกานต์ วงศ์สกุล" />
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="bPhone">เบอร์โทรศัพท์ <span class="req">*</span></label>
+            <input type="tel" id="bPhone" placeholder="เช่น 081-234-5678" maxlength="10" />
+          </div>
+          <div class="form-group">
+            <label for="bLine">LINE ID <small>(ถ้ามี)</small></label>
+            <input type="text" id="bLine" placeholder="เช่น beautyqueen" />
+          </div>
+        </div>
+        <div class="form-nav">
+          <button class="btn btn-outline" data-back="1">ย้อนกลับ</button>
+          <button class="btn btn-primary" data-next="3">ถัดไป</button>
+        </div>
+      </div>
+
+      <!-- ขั้น 3: วันที่และเวลา -->
+      <div class="form-step" id="step3" style="display:none;">
+        <h2 class="step-title">วันที่และเวลาที่สะดวก</h2>
+        <p class="step-desc">เลือกช่วงเวลาที่คุณสะดวก ทางร้านจะโทรยืนยันเวลาที่แน่นอนอีกครั้ง</p>
+        <div class="form-group">
+          <label for="bDate">วันที่ต้องการใช้บริการ <span class="req">*</span></label>
+          <input type="date" id="bDate" />
+        </div>
+        <div class="form-group">
+          <label>ช่วงเวลาที่สะดวก <span class="req">*</span></label>
+          <div class="slots" id="timeSlots"></div>
+        </div>
+        <div class="form-nav">
+          <button class="btn btn-outline" data-back="2">ย้อนกลับ</button>
+          <button class="btn btn-primary" data-next="4">ถัดไป</button>
+        </div>
+      </div>
+
+      <!-- ขั้น 4: สถานที่ให้บริการ -->
+      <div class="form-step" id="step4" style="display:none;">
+        <h2 class="step-title">สถานที่ให้บริการ</h2>
+        <p class="step-desc">ร้านของเราไม่มีหน้าร้านถาวร — เลือกได้ว่าต้องการให้บริการที่ไหน</p>
+
+        <div class="loc-opt" data-loc="home">
+          <div class="loc-head"><span class="loc-radio"></span> ให้ร้านไปหาฉัน</div>
+          <p class="loc-desc">ทางร้านจะเดินทางไปให้บริการที่บ้าน คอนโด หรือโรงแรมของคุณ</p>
+          <div class="loc-fields">
+            <div class="form-row">
+              <div class="form-group">
+                <label>ประเภทสถานที่ <span class="req">*</span></label>
+                <select id="bLocType">
+                  <option value="">— เลือก —</option>
+                  <option value="บ้าน">บ้าน</option>
+                  <option value="คอนโด">คอนโด</option>
+                  <option value="โรงแรม">โรงแรม</option>
+                  <option value="อื่น ๆ">อื่น ๆ</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>จำนวนผู้ใช้บริการ</label>
+                <input type="number" id="bPeople" min="1" value="1" />
+              </div>
+            </div>
+            <div class="form-group">
+              <label>ที่อยู่ / เลขห้อง <span class="req">*</span></label>
+              <input type="text" id="bAddress" placeholder="เช่น คอนโด The XXX ชั้น 10 ห้อง 1001, ถ.สุขุมวิท..." />
+            </div>
+            <div class="form-group">
+              <label>รายละเอียดสถานที่</label>
+              <input type="text" id="bLocDetail" placeholder="เช่น ป้อมยามคอนโด ฝั่งประตูหลัง / ลิฟต์ฝั่งขวา" />
+            </div>
+          </div>
+        </div>
+
+        <div class="loc-opt" data-loc="place">
+          <div class="loc-head"><span class="loc-radio"></span> ไปใช้บริการที่สถานที่นัดหมาย</div>
+          <p class="loc-desc">ทางร้านจะโทรกลับเพื่อแจ้งสถานที่นัดหมายและยืนยันรายละเอียดอีกครั้ง</p>
+        </div>
+
+        <div class="form-nav">
+          <button class="btn btn-outline" data-back="3">ย้อนกลับ</button>
+          <button class="btn btn-primary" data-next="5">ถัดไป</button>
+        </div>
+      </div>
+
+      <!-- ขั้น 5: ตรวจสอบ -->
+      <div class="form-step" id="step5" style="display:none;">
+        <h2 class="step-title">ตรวจสอบข้อมูล</h2>
+        <p class="step-desc">ตรวจสอบความถูกต้องอีกครั้งก่อนส่งคำขอนัดหมาย</p>
+        <ul class="review-list" id="reviewList"></ul>
+        <div class="form-nav">
+          <button class="btn btn-outline" data-back="4">ย้อนกลับ</button>
+          <button class="btn btn-gold btn-lg" id="btnSubmit" type="button">ส่งคำขอนัดหมาย</button>
+        </div>
+      </div>
+
+      <!-- ผลลัพธ์ -->
+      <div class="form-step" id="stepDone" style="display:none;">
+        <div class="success">
+          <div class="success-icon">✓</div>
+          <h2>ส่งคำขอนัดหมายเรียบร้อยแล้ว</h2>
+          <p style="color:var(--muted);">ขอบคุณสำหรับการใช้บริการ<br/>ทางร้านจะโทรกลับเพื่อยืนยันวัน เวลา และสถานที่ให้บริการ</p>
+          <div class="ref" id="refCode">BK-000000</div>
+          <p style="color:var(--muted); font-size:14px;">โปรดบันทึกรหัสอ้างอิงไว้ใช้ตรวจสอบสถานะ</p>
+          <div style="margin-top:8px;"><span class="status-badge status-pending">รอยืนยัน</span></div>
+          <div class="form-nav" style="justify-content:center;">
+            <a href="status.html" class="btn btn-outline">ตรวจสอบสถานะ</a>
+            <a href="index.html" class="btn btn-primary">กลับหน้าหลัก</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== สรุปด้านข้าง ========== -->
+    <aside class="booking-side">
+      <div class="card side-summary">
+        <h3 style="font-size:20px; margin-bottom:14px;">สรุปการจอง</h3>
+        <div id="sideServices" class="ss-row"><span class="ss-label">บริการ</span><span>—</span></div>
+        <div class="ss-row"><span class="ss-label">วันที่</span><span id="sideDate">—</span></div>
+        <div class="ss-row"><span class="ss-label">ช่วงเวลา</span><span id="sideTime">—</span></div>
+        <div class="ss-row"><span class="ss-label">สถานที่</span><span id="sideLoc">—</span></div>
+        <div class="ss-row"><span class="ss-label">ราคาโดยประมาณ</span><span class="ss-total" id="sideTotal">—</span></div>
+        <div class="side-hint">ℹ️ ราคาเป็นเพียงประมาณการ ราคาสุดท้ายขึ้นอยู่กับบริการจริงและระยะเวลา ทางร้านจะแจ้งให้ทราบก่อนให้บริการ</div>
+      </div>
+    </aside>
+
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="container footer-grid">
+    <div>
+      <a href="index.html" class="logo"><span class="logo-mark">✿</span><span>THD. BEAUTY &amp; STUDIO</span></a>
+      <p style="margin-top:14px; font-size:14.5px;">บริการต่อขนตาและนวดแบบนัดหมายถึงที่ เพื่อความสวยและการผ่อนคลายในแบบของคุณ</p>
+    </div>
+    <div>
+      <h4>เมนู</h4>
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="services.html">Services</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>บริการ</h4>
+      <ul>
+        <li><a href="services.html">ต่อขนตา</a></li>
+        <li><a href="services.html">นวดผ่อนคลาย</a></li>
+        <li><a href="status.html">ตรวจสอบสถานะ</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>ติดต่อ</h4>
+      <ul>
+        <li>โทร: <a href="tel:08X-XXX-XXXX">08X-XXX-XXXX</a></li>
+        <li>LINE: <a href="https://line.me/R/ti/p/@eyesbeauty" target="_blank" rel="noopener">@eyesbeauty</a></li>
+        <li>Facebook: <a href="https://www.facebook.com/people/THD-Beauty-Studio/61593494246633/" target="_blank" rel="noopener">THD Beauty Studio</a></li>
+        <li>เวลาทำการ: นัดหมายล่วงหน้า</li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div class="container">© <span class="year"></span> THD. BEAUTY &amp; STUDIO — ต่อขนตา &amp; นวด นัดหมายถึงที่</div>
+  </div>
+</footer>
+
+<script src="js/config.js"></script>
+<script src="js/main.js"></script>
+<script src="js/booking.js"></script>
+</body>
+</html>

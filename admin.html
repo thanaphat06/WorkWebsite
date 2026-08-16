@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Admin | THD. BEAUTY &amp; STUDIO</title>
+<meta name="robots" content="noindex, nofollow" />
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='48' fill='%234CA5A0'/><text x='50' y='66' font-size='52' text-anchor='middle'>✿</text></svg>" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&family=Noto+Sans+Thai:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="css/style.css" />
+</head>
+<body class="admin-body">
+
+<!-- Topbar -->
+<div class="admin-topbar">
+  <div class="container">
+    <a href="index.html" class="logo"><span class="logo-mark">✿</span><span>THD. BEAUTY &amp; STUDIO — Admin</span></a>
+    <button class="btn btn-gold" id="btnLogout" style="display:none;">ออกจากระบบ</button>
+  </div>
+</div>
+
+<!-- ===== หน้าล็อกอิน ===== -->
+<section class="admin-login" id="loginView">
+  <div class="card admin-login-card">
+    <div style="font-size:46px; margin-bottom:10px;">✿</div>
+    <h1>เข้าสู่ระบบ Admin</h1>
+    <p>กรอกรหัส PIN เพื่อเข้าจัดการคำขอนัดหมาย</p>
+    <div class="form-group">
+      <input type="password" class="pin-input" id="pinInput" placeholder="• • • •" maxlength="6" inputmode="numeric" autocomplete="off" />
+    </div>
+    <button class="btn btn-primary btn-block" id="btnLogin">เข้าสู่ระบบ</button>
+  </div>
+</section>
+
+<!-- ===== Dashboard ===== -->
+<section class="section" id="dashView" style="display:none; padding-top:28px;">
+  <div class="container admin-grid">
+
+    <!-- เมนูข้าง -->
+    <aside class="card admin-side">
+      <a href="#" data-view="appointments" class="active"><span class="icon">📋</span> นัดหมาย</a>
+      <a href="#" data-view="services"><span class="icon">💅</span> บริการ</a>
+      <a href="index.html"><span class="icon">🌐</span> ดูเว็บไซต์</a>
+    </aside>
+
+    <!-- เนื้อหา -->
+    <main>
+      <!-- ===== นัดหมาย ===== -->
+      <div id="view-appointments">
+        <div class="summary-cards" id="summaryCards"></div>
+
+        <div class="filter-bar">
+          <select id="filterStatus">
+            <option value="all">สถานะทั้งหมด</option>
+            <option value="pending">รอยืนยัน</option>
+            <option value="contacting">กำลังติดต่อ</option>
+            <option value="confirmed">ยืนยันแล้ว</option>
+            <option value="inservice">กำลังให้บริการ</option>
+            <option value="completed">เสร็จสิ้น</option>
+            <option value="cancelled">ยกเลิก</option>
+            <option value="unable">ติดต่อไม่ได้</option>
+          </select>
+          <button class="btn btn-dark btn-sm" id="btnRefresh">รีเฟรช</button>
+        </div>
+
+        <div class="table-wrap">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>Booking ID</th>
+                <th>ชื่อลูกค้า</th>
+                <th>เบอร์โทร</th>
+                <th>บริการ</th>
+                <th>วันที่</th>
+                <th>ช่วงเวลา</th>
+                <th>สถานที่</th>
+                <th>สถานะ</th>
+                <th>จัดการ</th>
+              </tr>
+            </thead>
+            <tbody id="apptTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ===== บริการ ===== -->
+      <div id="view-services" style="display:none;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; flex-wrap:wrap; gap:14px;">
+          <h2 style="font-size:24px;">จัดการบริการ</h2>
+          <button class="btn btn-primary btn-sm" id="btnAddService">+ เพิ่มบริการ</button>
+        </div>
+        <div class="table-wrap">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>หมวด</th>
+                <th>ชื่อบริการ</th>
+                <th>ระยะเวลา</th>
+                <th>ราคา</th>
+                <th>สถานะ</th>
+                <th>จัดการ</th>
+              </tr>
+            </thead>
+            <tbody id="serviceTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </main>
+  </div>
+</section>
+
+<!-- ===== Modal รายละเอียดนัดหมาย ===== -->
+<div class="modal" id="apptModal">
+  <div class="modal-card">
+    <button class="modal-close" id="modalClose">✕</button>
+    <h2 style="font-size:24px; margin-bottom:4px;" id="modalRef">BK-000000</h2>
+    <div style="margin-bottom:20px;" id="modalStatusBadge"></div>
+
+    <div class="detail-block">
+      <h4>ลูกค้า</h4>
+      <div class="detail-grid">
+        <div class="dg"><span class="dg-label">ชื่อ</span><span class="dg-value" id="mName">-</span></div>
+        <div class="dg"><span class="dg-label">เบอร์โทร</span><span class="dg-value" id="mPhone">-</span></div>
+        <div class="dg"><span class="dg-label">LINE</span><span class="dg-value" id="mLine">-</span></div>
+        <div class="dg"><span class="dg-label">จำนวนผู้ใช้บริการ</span><span class="dg-value" id="mPeople">1</span></div>
+      </div>
+    </div>
+
+    <div class="detail-block">
+      <h4>บริการ</h4>
+      <div class="detail-grid">
+        <div class="dg"><span class="dg-label">บริการ</span><span class="dg-value" id="mServices">-</span></div>
+        <div class="dg"><span class="dg-label">ราคาโดยประมาณ</span><span class="dg-value" id="mTotal">-</span></div>
+      </div>
+    </div>
+
+    <div class="detail-block">
+      <h4>นัดหมาย</h4>
+      <div class="detail-grid">
+        <div class="dg"><span class="dg-label">วันที่</span><span class="dg-value" id="mDate">-</span></div>
+        <div class="dg"><span class="dg-label">ช่วงเวลาที่ต้องการ</span><span class="dg-value" id="mTime">-</span></div>
+        <div class="dg"><span class="dg-label">สถานที่ให้บริการ</span><span class="dg-value" id="mLocType">-</span></div>
+        <div class="dg"><span class="dg-label">ที่อยู่</span><span class="dg-value" id="mAddress">-</span></div>
+        <div class="dg"><span class="dg-label">รายละเอียดสถานที่</span><span class="dg-value" id="mLocDetail">-</span></div>
+        <div class="dg"><span class="dg-label">หมายเหตุ</span><span class="dg-value" id="mNote">-</span></div>
+      </div>
+    </div>
+
+    <div class="detail-block admin-note">
+      <h4>บันทึกจากการโทร (Admin Note)</h4>
+      <textarea id="mAdminNote" placeholder="เช่น ลูกค้าสะดวกเปลี่ยนเป็นช่วงบ่าย โทรครั้งที่ 2 จึงติดต่อได้"></textarea>
+      <button class="btn btn-outline btn-sm" id="btnSaveNote" style="margin-top:10px;">บันทึกหมายเหตุ</button>
+    </div>
+
+    <div class="admin-actions">
+      <a class="btn btn-dark btn-sm" id="btnCall">📞 โทรหาลูกค้า</a>
+      <button class="btn btn-primary btn-sm" data-status="confirmed">ยืนยันนัดหมาย</button>
+      <button class="btn btn-outline btn-sm" data-status="contacting">กำลังติดต่อ</button>
+      <button class="btn btn-outline btn-sm" data-status="inservice">กำลังให้บริการ</button>
+      <button class="btn btn-outline btn-sm" data-status="completed">เสร็จสิ้น</button>
+      <button class="btn btn-outline btn-sm" data-status="unable">ติดต่อไม่ได้</button>
+      <button class="btn btn-outline btn-sm" id="btnEditAppt">🕐 เปลี่ยนวัน/เวลา/สถานที่</button>
+      <button class="btn btn-outline btn-sm" style="border-color:#d88; color:#b34040;" data-status="cancelled">ยกเลิก</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== Modal แก้ไขนัดหมาย ===== -->
+<div class="modal" id="editModal">
+  <div class="modal-card" style="max-width:560px;">
+    <button class="modal-close" id="editClose">✕</button>
+    <h2 style="font-size:22px; margin-bottom:20px;">เปลี่ยนวัน / เวลา / สถานที่</h2>
+    <div class="form-group">
+      <label>วันที่</label>
+      <input type="date" id="eDate" />
+    </div>
+    <div class="form-group">
+      <label>ช่วงเวลา</label>
+      <select id="eTime"></select>
+    </div>
+    <div class="form-group">
+      <label>ประเภทสถานที่</label>
+      <select id="eLocType">
+        <option value="home">ให้ร้านไปหาลูกค้า</option>
+        <option value="place">ไปใช้บริการที่สถานที่นัดหมาย</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>ที่อยู่</label>
+      <input type="text" id="eAddress" placeholder="ที่อยู่ / เลขห้อง (ถ้าให้ร้านไปหา)" />
+    </div>
+    <button class="btn btn-primary btn-block" id="btnSaveEdit">บันทึกการเปลี่ยนแปลง</button>
+  </div>
+</div>
+
+<!-- ===== Modal บริการ ===== -->
+<div class="modal" id="serviceModal">
+  <div class="modal-card" style="max-width:560px;">
+    <button class="modal-close" id="svcClose">✕</button>
+    <h2 style="font-size:22px; margin-bottom:20px;" id="svcModalTitle">เพิ่มบริการ</h2>
+    <input type="hidden" id="svcId" />
+    <div class="form-group">
+      <label>หมวดหมู่</label>
+      <select id="svcCategory">
+        <option value="lash">ต่อขนตา</option>
+        <option value="massage">นวด</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>ชื่อบริการ</label>
+      <input type="text" id="svcName" placeholder="เช่น Volume Lash" />
+    </div>
+    <div class="form-group">
+      <label>รายละเอียด</label>
+      <textarea id="svcDesc" placeholder="รายละเอียดสั้น ๆ ของบริการ"></textarea>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>ระยะเวลา</label>
+        <input type="text" id="svcDuration" placeholder="เช่น 120 นาที" />
+      </div>
+      <div class="form-group">
+        <label>ราคา (บาท)</label>
+        <input type="number" id="svcPrice" placeholder="1200" />
+      </div>
+    </div>
+    <button class="btn btn-primary btn-block" id="btnSaveService">บันทึกบริการ</button>
+  </div>
+</div>
+
+<script src="js/config.js"></script>
+<script src="js/main.js"></script>
+<script src="js/admin.js"></script>
+</body>
+</html>
