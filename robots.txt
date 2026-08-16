@@ -2,4 +2,4 @@ User-agent: *
 Allow: /
 Disallow: /admin.html
 
-Sitemap: https://username.github.io/eyes/sitemap.xml
+Sitemap: https://thanaphat06.github.io/WorkWebsite/sitemap.xml
