@@ -9,8 +9,8 @@ window.AppConfig = {
 
   // ข้อมูลติดต่อร้าน
   contact: {
-    phone: "08X-XXX-XXXX",
-    lineId: "@eyesbeauty",
+    phone: "0986545684",
+    lineId: "ยังไม่มีช่องทางนี้",
     email: "hello@eyesbeauty.example",
     facebook: "https://www.facebook.com/people/THD-Beauty-Studio/61593494246633/",
     instagram: "eyesbeauty",

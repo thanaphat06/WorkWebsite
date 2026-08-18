@@ -1,10 +1,10 @@
 /* ระบบ Step Form จองบริการ (5 ขั้นตอน) */
 
 const FALLBACK_BOOK_SERVICES = [
-  { id: 1, category: "lash", name: "Classic Lash", description: "ต่อขนตาแบบเส้นต่อเส้น เนียนเป็นธรรมชาติ", duration: "120 นาที", price: 1200 },
-  { id: 2, category: "lash", name: "Volume Lash", description: "ต่อขนตาแบบฟุ้งบานให้ดวงตากลมโต", duration: "150 นาที", price: 1800 },
-  { id: 3, category: "lash", name: "Hybrid Lash", description: "ผสม Classic + Volume ดูมีมิติ", duration: "140 นาที", price: 1600 },
-  { id: 4, category: "lash", name: "Lash Removal", description: "ถอดขนตาปลอมอย่างอ่อนโยน", duration: "30 นาที", price: 300 },
+  { id: 1, category: "lash", name: "Classic Lash", description: "ต่อขนตาแบบเส้นต่อเส้น เนียนเป็นธรรมชาติ", duration: "120 นาที", price: 1200, image: "assets/img/open-lash.jpeg" },
+  { id: 2, category: "lash", name: "Volume Lash", description: "ต่อขนตาแบบฟุ้งบานให้ดวงตากลมโต", duration: "150 นาที", price: 1800, image: "assets/img/natural-lash.jpeg" },
+  { id: 3, category: "lash", name: "Hybrid Lash", description: "ผสม Classic + Volume ดูมีมิติ", duration: "140 นาที", price: 1600, image: "assets/img/squirrel-lash.jpeg" },
+  { id: 4, category: "lash", name: "Lash Removal", description: "ถอดขนตาปลอมอย่างอ่อนโยน", duration: "30 นาที", price: 300, image: "assets/img/eye-lash-remover.jpg" },
   { id: 5, category: "massage", name: "Thai Massage", description: "นวดแผนไทยคลายเส้น", duration: "60 นาที", price: 600 },
   { id: 6, category: "massage", name: "Oil Massage", description: "นวดน้ำมันอโรมา ผิวเนียนนุ่ม", duration: "60 นาที", price: 700 },
   { id: 7, category: "massage", name: "Relaxing Massage", description: "นวดผ่อนคลายความเครียด", duration: "90 นาที", price: 900 },
