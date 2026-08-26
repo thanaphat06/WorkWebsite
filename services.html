@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>บริการของเรา | THD. BEAUTY &amp; STUDIO — ต่อขนตา &amp; นวด</title>
+<title>บริการของเรา | THD. BEAUTY STUDIO — ต่อขนตา &amp; นวด</title>
 <meta name="description" content="รายการบริการต่อขนตา (Classic, Volume, Hybrid) และนวด (ไทย, น้ำมัน, ผ่อนคลาย) พร้อมราคาและระยะเวลา จองล่วงหน้าออนไลน์" />
 <meta name="robots" content="index, follow" />
 <link rel="icon" type="image/png" href="assets/img/logo.png" />
@@ -16,7 +16,7 @@
 
 <header class="header">
   <div class="container nav">
-    <a href="index.html" class="logo"><img src="assets/img/logo.png" alt="" class="logo-img" width="38" height="38"><span>THD. BEAUTY &amp; STUDIO</span></a>
+    <a href="index.html" class="logo"><img src="assets/img/logo.png" alt="" class="logo-img" width="28" height="28"><span>THD. BEAUTY STUDIO</span></a>
     <nav>
       <ul class="nav-links" id="navLinks">
         <li><a href="index.html">Home</a></li>
@@ -43,7 +43,7 @@
     <div class="tabs" id="tabs">
       <button class="tab active" data-filter="all">ทั้งหมด</button>
       <button class="tab" data-filter="lash">ต่อขนตา</button>
-      <button class="tab" data-filter="massage">นวด</button>
+      <button class="tab" data-filter="massage">ทรีดเม้นหน้า</button>
     </div>
 
     <div id="servicesGrid" class="catalog-grid">
@@ -59,7 +59,7 @@
 <footer class="footer">
   <div class="container footer-grid">
     <div>
-      <a href="index.html" class="logo"><img src="assets/img/logo.png" alt="" class="logo-img" width="38" height="38"><span>THD. BEAUTY &amp; STUDIO</span></a>
+      <a href="index.html" class="logo"><img src="assets/img/logo.png" alt="" class="logo-img" width="28" height="28"><span>THD. BEAUTY STUDIO</span></a>
       <p style="margin-top:14px; font-size:14.5px;">บริการต่อขนตาและนวดแบบนัดหมายถึงที่ เพื่อความสวยและการผ่อนคลายในแบบของคุณ</p>
     </div>
     <div>
@@ -90,7 +90,7 @@
     </div>
   </div>
   <div class="footer-bottom">
-    <div class="container">© <span class="year"></span> THD. BEAUTY &amp; STUDIO — ต่อขนตา &amp; นวด นัดหมายถึงที่</div>
+    <div class="container">© <span class="year"></span> THD. BEAUTY STUDIO — ต่อขนตา &amp; นวด นัดหมายถึงที่</div>
   </div>
 </footer> 
 
@@ -99,16 +99,12 @@
 <script>
 /* บริการเริ่มต้น (แสดงถ้ายังไม่ได้เชื่อมต่อ Apps Script หรือเปิดแบบไม่มี URL) */
 const FALLBACK_SERVICES = [
-  { id: 1, category: "lash", name: "Open Lash", description: "60-90 Minute Natural Open Eye look /THB 799.- Y or 3D /THB 900.-  4D-6D/THB 1,100.-", duration: "60-90 นาที", price: 1000, image: "assets/img/open-lash.jpeg" },
+  { id: 1, category: "lash", name: "Open Lash", description: "60-90 Minute Natural Open Eye look /THB 799.- Y or 3D /THB 900.-  4D-6D/THB 1,100.-", duration: "60-90 นาที", price: 799, image: "assets/img/open-lash.jpeg" },
   { id: 2, category: "lash", name: "Volume Lash", description: "60-75 Minutes Natural look THB 799.-", duration: "60-75 นาที", price: 799, image: "assets/img/natural-lash.jpeg" },
-  { id: 3, category: "lash", name: "Hybrid Lash", description: "60-90 Minute Natural Squirrel look /THB 799.-Y or 3D/THB 1,000. -4D-6D/THB 1,200. -", duration: "60-90 นาที", price: 1200, image: "assets/img/squirrel-lash.jpeg" },
-  { id: 4, category: "lash", name: "Cat Lash", description: "60-90 Minute Natural Open Eye look /THB 799.-Y or 3D/THB 1,000. -4D-6D/THB 1,200. -", duration: "60-90 นาที", price: 1200, image: "assets/img/cat-lash.png" },
+  { id: 3, category: "lash", name: "Hybrid Lash", description: "60-90 Minute Natural Squirrel look /THB 799.-Y or 3D/THB 1,000. -4D-6D/THB 1,200. -", duration: "60-90 นาที", price: 799, image: "assets/img/squirrel-lash.jpeg" },
+  { id: 4, category: "lash", name: "Cat Lash", description: "60-90 Minute Natural Open Eye look /THB 799.-Y or 3D/THB 1,000. -4D-6D/THB 1,200. -", duration: "60-90 นาที", price: 799, image: "assets/img/cat-lash.png" },
   { id: 5, category: "lash", name: "Wet Look Lash", description: "60-75 Minutes Natural Wet lookTHB 799.-", duration: "60-75 นาที", price: 799, image: "assets/img/Wet-look-lash.png" },
-  { id: 6, category: "lash", name: "Eye Lash Remover", description: "30 Minute Removal & New Set/THB 300.-45 MinutesLash Removal & Eye Care TreatmentTHB 600.-", duration: "30 or 45 นาที", price: 600, image: "assets/img/Eye-lash-remover.png" },
-  { id: 9, category: "massage", name: "Thai Massage", description: "นวดแผนไทยคลายเส้น คลายกล้ามเนื้อเมื่อยล้า ด้วยเทคนิคดั้งเดิม", duration: "60 นาที", price: 600 },
-  { id: 6, category: "massage", name: "Oil Massage", description: "นวดน้ำมันอโรมาผ่อนคลาย ให้ผิวเนียนนุ่ม และร่างกายปลอดโปร่ง", duration: "60 นาที", price: 700 },
-  { id: 7, category: "massage", name: "Relaxing Massage", description: "นวดผ่อนคลายความเครียด เหมาะสำหรับผู้ที่ต้องการพักผ่อนเต็มรูปแบบ", duration: "90 นาที", price: 900 },
-  { id: 8, category: "massage", name: "Head & Shoulder Massage", description: "นวดศีรษะและไหล่ คลายความตึงเครียดจากการทำงานหนัก", duration: "30 นาที", price: 400 },
+  { id: 6, category: "lash", name: "Eye Lash Remover", description: "30 Minute Removal & New Set/THB 300.-45 MinutesLash Removal & Eye Care TreatmentTHB 600.-", duration: "30 or 45 นาที", price: 300, image: "assets/img/Eye-lash-remover.png" },
 ];
 
 let services = [];
@@ -128,7 +124,7 @@ function renderServices() {
   grid.innerHTML = filtered.map(s => {
     const icon = window.AppConfig.serviceIcons[s.category] || window.AppConfig.serviceIcons.default;
     const gold = s.category === "massage";
-    const catLabel = s.category === "lash" ? "ต่อขนตา" : "นวด";
+    const catLabel = s.category === "lash" ? "ต่อขนตา" : "ทรีดเม้นหน้า";
     return `
     <div class="card catalog-card">
       <div class="catalog-card-img ${gold ? "catalog-card-img--gold" : ""}">

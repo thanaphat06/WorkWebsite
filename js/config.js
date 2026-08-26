@@ -4,7 +4,7 @@ window.AppConfig = {
   appsScriptUrl: "https://script.google.com/macros/s/AKfycbyUuZnygEXZ2PUfFNC33w2K7owRAWtuvwgP2RTfxVHl3rhIqwq96U78QENu8LS2SG8/exec",
 
   // ชื่อร้าน (ใช้แสดงผลทั่วเว็บ)
-  shopName: "THD. BEAUTY & STUDIO",
+  shopName: "THD. BEAUTY STUDIO",
   shopTagline: "Beauty & Relaxation, Wherever You Are",
 
   // ข้อมูลติดต่อร้าน
