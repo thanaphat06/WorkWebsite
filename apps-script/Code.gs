@@ -59,7 +59,6 @@ function doPost(e) {
 }
 
 function handleRequest(e, method) {
-  // ปิดการ cache เพื่อให้ข้อมูลใหม่อยู่เสมอ
   var cacheBuster = new Date().getTime();
 
   try {
@@ -98,13 +97,10 @@ function route(payload) {
   var action = String(payload.action || "");
 
   switch (action) {
-    // Public
     case "getServices":      return getServices();
     case "createRequest":    return createRequest(payload);
     case "checkStatus":      return checkStatus(payload);
     case "contactMessage":   return contactMessage(payload);
-
-    // Admin
     case "adminLogin":       return adminLogin(payload);
     case "adminList":        return requireAdmin(payload, adminList);
     case "adminUpdate":      return requireAdmin(payload, adminUpdate);
@@ -135,7 +131,7 @@ function getServices() {
       return rowToObj(SERVICE_HEADERS, r, i + 1);
     })
     .filter(function (s) {
-      return s.name; // ข้ามแถวว่าง
+      return s.name;
     });
   return ok({ services: list });
 }
@@ -158,7 +154,6 @@ function createRequest(p) {
   var time = String(p.preferred_time || "").trim();
   var locType = String(p.location_type || "");
 
-  // ตรวจสอบข้อมูลที่จำเป็น
   if (!name) return fail("กรุณากรอกชื่อ");
   if (!/^0\d{8,9}$/.test(phone)) return fail("เบอร์โทรศัพท์ไม่ถูกต้อง");
   if (!services.length) return fail("กรุณาเลือกบริการอย่างน้อย 1 รายการ");
@@ -166,10 +161,8 @@ function createRequest(p) {
   if (!time) return fail("กรุณาเลือกช่วงเวลา");
   if (locType !== "home" && locType !== "place") return fail("กรุณาเลือกสถานที่ให้บริการ");
 
-  // สร้าง booking_id
   var bookingId = generateBookingId();
 
-  // สร้างข้อความสรุปบริการ + รวมราคา
   var serviceNames = [];
   var serviceText = [];
   var total = 0;
@@ -196,7 +189,7 @@ function createRequest(p) {
     String(p.location_detail || "").trim(),
     String(p.number_of_people || "1"),
     String(p.note || "").trim(),
-    "pending", // สถานะเริ่มต้น = รอยืนยัน
+    "pending",
     "",
     now.toISOString(),
     now.toISOString()
@@ -204,7 +197,6 @@ function createRequest(p) {
 
   appendRow("appointments", row);
 
-  // ส่งอีเมลแจ้งเตือนเจ้าของร้าน (ถ้าตั้งค่า NOTIFY_EMAIL)
   try {
     var notifyEmail = PropertiesService.getScriptProperties().getProperty("NOTIFY_EMAIL");
     if (notifyEmail) {
@@ -272,7 +264,6 @@ function adminList() {
     .filter(function (r) { return r.length > 0 && r[0]; })
     .map(function (r, i) { return rowToObj(APPT_HEADERS, r, i + 1); });
 
-  // เรียงวันที่ใหม่ -> เก่า
   list.sort(function (a, b) {
     return String(b.created_at || "").localeCompare(String(a.created_at || ""));
   });
@@ -289,13 +280,11 @@ function adminUpdate(p) {
   var headers = sheet.getRange(1, 1, 1, APPT_HEADERS.length).getValues()[0];
   var current = readRow(sheet, rowIndex);
 
-  // อัปเดตสถานะ (ถ้ามี)
   if (p.status) {
     if (STATUS_LIST.indexOf(p.status) < 0) return fail("สถานะไม่ถูกต้อง");
     current[headers.indexOf("status")] = p.status;
   }
 
-  // อัปเดตวันที่/เวลา/สถานที่ (ถ้ามี)
   if (p.appointment_date) current[headers.indexOf("appointment_date")] = p.appointment_date;
   if (p.preferred_time) current[headers.indexOf("preferred_time")] = p.preferred_time;
   if (p.location_type) current[headers.indexOf("location_type")] = p.location_type;
@@ -339,7 +328,6 @@ function adminSaveService(p) {
   var options = String(p.options || "");
   var image = String(p.image || "").trim();
 
-  // แก้ไขที่มีอยู่
   if (p.id) {
     var found = findServiceRow(String(p.id));
     if (found >= 0) {
@@ -357,7 +345,6 @@ function adminSaveService(p) {
     }
   }
 
-  // เพิ่มใหม่
   var nextId = nextServiceId(sheet);
   var newRow = [nextId, category, name, description, duration, price, options, image, "active", new Date().toISOString()];
   appendRow("services", newRow);
@@ -393,41 +380,28 @@ function uploadImage(p) {
   var imageData = String(p.image || "").trim();
   if (!imageData) return fail("ไม่มีข้อมูลรูปภาพ");
 
-  var props = PropertiesService.getScriptProperties();
-  var cloudName = props.getProperty("CLOUDINARY_CLOUD_NAME");
-  var uploadPreset = props.getProperty("CLOUDINARY_UPLOAD_PRESET");
-
-  if (!cloudName || !uploadPreset) {
-    return fail("ยังไม่ได้ตั้งค่า CLOUDINARY_CLOUD_NAME หรือ CLOUDINARY_UPLOAD_PRESET ใน Script Properties");
-  }
-
   try {
-    var blob = Utilities.newBlob(
-      Utilities.base64Decode(imageData),
-      "image/jpeg",
-      "photo.jpg"
-    );
+    var decoded = Utilities.base64Decode(imageData);
+    var blob = Utilities.newBlob(decoded, "image/jpeg", "photo.jpg");
 
     var formData = {
-      "file": blob,
-      "upload_preset": uploadPreset,
+      reqtype: "fileupload",
+      userhash: "",
+      fileToUpload: blob,
     };
 
-    var response = UrlFetchApp.fetch(
-      "https://api.cloudinary.com/v1_1/" + cloudName + "/image/upload",
-      {
-        method: "post",
-        payload: formData,
-        muteHttpExceptions: true,
-      }
-    );
+    var response = UrlFetchApp.fetch("https://catbox.moe/user/api.php", {
+      method: "post",
+      payload: formData,
+      muteHttpExceptions: true,
+    });
 
-    var result = JSON.parse(response.getContentText());
+    var url = response.getContentText().trim();
 
-    if (result.secure_url) {
-      return ok({ url: result.secure_url, display_url: result.secure_url });
+    if (url && url.indexOf("https://") === 0) {
+      return ok({ url: url, display_url: url });
     } else {
-      return fail("Cloudinary: " + (result.error ? result.error.message : JSON.stringify(result)));
+      return fail("catbox: " + url);
     }
   } catch (e) {
     return fail("เกิดข้อผิดพลาด: " + e.message);
@@ -531,7 +505,6 @@ function nextServiceId(sheet) {
 /* ===================== On install ===================== */
 
 function setup() {
-  // รันครั้งเดียวเพื่อสร้างหัวตาราง (หรือใช้ getOrCreateSheet ตอนรันจริงก็ได้)
   getOrCreateSheet("appointments", APPT_HEADERS);
   getOrCreateSheet("services", SERVICE_HEADERS);
   getOrCreateSheet("messages", ["created_at", "name", "phone", "line_id", "topic", "message"]);
