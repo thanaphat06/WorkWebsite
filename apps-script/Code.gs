@@ -393,33 +393,41 @@ function uploadImage(p) {
   var imageData = String(p.image || "").trim();
   if (!imageData) return fail("ไม่มีข้อมูลรูปภาพ");
 
-  var apiKey = PropertiesService.getScriptProperties().getProperty("IMGBB_API_KEY");
-  if (!apiKey) return fail("ยังไม่ได้ตั้งค่า IMGBB_API_KEY ใน Script Properties");
+  var props = PropertiesService.getScriptProperties();
+  var cloudName = props.getProperty("CLOUDINARY_CLOUD_NAME");
+  var uploadPreset = props.getProperty("CLOUDINARY_UPLOAD_PRESET");
+
+  if (!cloudName || !uploadPreset) {
+    return fail("ยังไม่ได้ตั้งค่า CLOUDINARY_CLOUD_NAME หรือ CLOUDINARY_UPLOAD_PRESET ใน Script Properties");
+  }
 
   try {
-    var imageBlob = Utilities.newBlob(
+    var blob = Utilities.newBlob(
       Utilities.base64Decode(imageData),
       "image/jpeg",
       "photo.jpg"
     );
 
     var formData = {
-      "key": apiKey.trim(),
-      "image": imageBlob,
+      "file": blob,
+      "upload_preset": uploadPreset,
     };
 
-    var response = UrlFetchApp.fetch("https://api.imgbb.com/1/upload", {
-      method: "post",
-      payload: formData,
-      muteHttpExceptions: true,
-    });
+    var response = UrlFetchApp.fetch(
+      "https://api.cloudinary.com/v1_1/" + cloudName + "/image/upload",
+      {
+        method: "post",
+        payload: formData,
+        muteHttpExceptions: true,
+      }
+    );
 
     var result = JSON.parse(response.getContentText());
 
-    if (result.success) {
-      return ok({ url: result.data.url, display_url: result.data.display_url });
+    if (result.secure_url) {
+      return ok({ url: result.secure_url, display_url: result.secure_url });
     } else {
-      return fail("imgbb: " + (result.error ? result.error.message : JSON.stringify(result)));
+      return fail("Cloudinary: " + (result.error ? result.error.message : JSON.stringify(result)));
     }
   } catch (e) {
     return fail("เกิดข้อผิดพลาด: " + e.message);

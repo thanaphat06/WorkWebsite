@@ -80,12 +80,16 @@ Eyes/
      |---|---|
      | `SHEET_ID` | (Sheet ID ที่คัดลอกมาจากส่วนที่ 1) |
      | `ADMIN_PIN` | รหัส PIN 4-6 หลักสำหรับเข้า Admin (เช่น `2468`) |
-     | `IMGBB_API_KEY` | API Key จาก imgbb.com (สำหรับอัปโหลดรูปภาพ — ดูวิธีgetting ด้านล่าง) |
+     | `CLOUDINARY_CLOUD_NAME` | Cloud Name จาก Cloudinary (สำหรับอัปโหลดรูปภาพ) |
+     | `CLOUDINARY_UPLOAD_PRESET` | Upload Preset จาก Cloudinary |
 
-   - **วิธี getting IMGBB_API_KEY (ฟรี):**
-     1. ไปที่ https://api.imgbb.com/
-     2. กรอกอีเมลของร้าน → กด **SEND KEY**
-     3. เปิดอีเมล → คัดลอก API Key → วางใน Script Properties
+   - **วิธีตั้งค่า Cloudinary (ฟรี):**
+     1. ไปที่ https://cloudinary.com/ แล้วสมัครสมาชิก (ฟรี)
+     2. หลังเข้าสู่ระบบ → ไปที่ **Settings** → **Upload**
+     3. เลื่อนลงไปที่ **Upload presets** → กด **Add upload preset**
+     4. ตั้งชื่อ เช่น `thd-uploads` → เลือก **Signing Mode: Unsigned** → กด **Save**
+     5. คัดลอก **Cloud name** (อยู่หน้า Settings → Dashboard) → วางเป็น `CLOUDINARY_CLOUD_NAME`
+     6. คัดลอกชื่อ Upload preset ที่สร้าง → วางเป็น `CLOUDINARY_UPLOAD_PRESET`
 
    - ตั้งชื่อโปรเจกต์ เช่น `Eyes Booking Backend`
 
@@ -162,7 +166,7 @@ appsScriptUrl: "https://script.google.com/macros/s/XXXXXXXXX/exec",
 - เปลี่ยนวัน/เวลา/สถานที่
 - บันทึก Admin Note (บันทึกจากการโทร)
 - **จัดการบริการ:** เพิ่ม/แก้ไข/ลบบริการ พร้อมรูปภาพและราคาหลายระดับ
-- **อัปโหลดรูปภาพ:** กดเลือกไฟล์จากมือถือ/คอม → อัปโหลดอัตโนมัติ (ผ่าน imgbb.com)
+- **อัปโหลดรูปภาพ:** กดเลือกไฟล์จากมือถือ/คอม → อัปโหลดอัตโนมัติ (ผ่าน Cloudinary)
 
 > 📱 เจ้าของร้านสะดวกแค่ดูใน Google Sheet ก็ได้ — ข้อมูลจะถูกบันทึกลงไปโดยอัตโนมัติ
 
@@ -213,7 +217,7 @@ appsScriptUrl: "https://script.google.com/macros/s/XXXXXXXXX/exec",
 | สร้าง Google Sheet | ⏳ ต้องทำ |
 | Deploy Apps Script | ⏳ ต้องทำ |
 | ใส่ Apps Script URL ใน config.js | ⏳ ต้องทำ |
-| ตั้งค่า IMGBB_API_KEY | ⏳ ต้องทำ (สำหรับอัปโหลดรูป) |
+| ตั้งค่า Cloudinary | ⏳ ต้องทำ (สำหรับอัปโหลดรูป) |
 | Deploy ขึ้น GitHub Pages | ⏳ ต้องทำ |
 
 ---
@@ -224,4 +228,4 @@ appsScriptUrl: "https://script.google.com/macros/s/XXXXXXXXX/exec",
 - PIN แอดมินเก็บอยู่ใน Script Properties ของ Google (ไม่ใช่ในเว็บ) — ปลอดภัยกว่าการฝังในโค้ด
 - ข้อมูลเป็นไปตาม schema ที่ระบุ: `users` → ใช้ข้อมูลในตาราง appointments แทน (ไม่มีระบบ user หลายคน ตามความต้องการร้านเล็กๆ)
 - เปลี่ยน `NOTIFY_EMAIL` เพิ่มได้ใน Script Properties เพื่อให้ระบบส่งอีเมลแจ้งเมื่อมีคำขอใหม่ (optional)
-- **รูปภาพบริการ** ใช้บริการ imgbb.com ในการโฮสต์ (ฟรี) — แอดมินแค่กดเลือกไฟล์จากระบบ
+- **รูปภาพบริการ** ใช้บริการ Cloudinary ในการโฮสต์ (ฟรี) — แอดมินแค่กดเลือกไฟล์จากระบบ
