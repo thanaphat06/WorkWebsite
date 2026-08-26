@@ -74,12 +74,18 @@ Eyes/
 2. ลบโค้ดเดิมออก แล้ววางโค้ดจากไฟล์ [`apps-script/Code.gs`](apps-script/Code.gs) ลงไปทั้งหมด
 3. กด **Save** (💾)
 4. ไปที่ **Project Settings (การตั้งค่าโปรเจกต์)** — ไอคอนรูปเกียร์ ⚙️ ด้านซ้าย
-   - ในหัวข้อ **Script Properties** กด **Add script property** แล้วเพิ่ม 2 รายการ:
+   - ในหัวข้อ **Script Properties** กด **Add script property** แล้วเพิ่ม 3 รายการ:
 
      | Key | Value |
      |---|---|
      | `SHEET_ID` | (Sheet ID ที่คัดลอกมาจากส่วนที่ 1) |
      | `ADMIN_PIN` | รหัส PIN 4-6 หลักสำหรับเข้า Admin (เช่น `2468`) |
+     | `IMGBB_API_KEY` | API Key จาก imgbb.com (สำหรับอัปโหลดรูปภาพ — ดูวิธีgetting ด้านล่าง) |
+
+   - **วิธี getting IMGBB_API_KEY (ฟรี):**
+     1. ไปที่ https://api.imgbb.com/
+     2. กรอกอีเมลของร้าน → กด **SEND KEY**
+     3. เปิดอีเมล → คัดลอก API Key → วางใน Script Properties
 
    - ตั้งชื่อโปรเจกต์ เช่น `Eyes Booking Backend`
 
@@ -155,7 +161,8 @@ appsScriptUrl: "https://script.google.com/macros/s/XXXXXXXXX/exec",
 - เปลี่ยนสถานะ: รอยืนยัน → กำลังติดต่อ → ยืนยันแล้ว → กำลังให้บริการ → เสร็จสิ้น / ยกเลิก / ติดต่อไม่ได้
 - เปลี่ยนวัน/เวลา/สถานที่
 - บันทึก Admin Note (บันทึกจากการโทร)
-- จัดการบริการและราคา (เพิ่ม/แก้ไข/ปิด)
+- **จัดการบริการ:** เพิ่ม/แก้ไข/ลบบริการ พร้อมรูปภาพและราคาหลายระดับ
+- **อัปโหลดรูปภาพ:** กดเลือกไฟล์จากมือถือ/คอม → อัปโหลดอัตโนมัติ (ผ่าน imgbb.com)
 
 > 📱 เจ้าของร้านสะดวกแค่ดูใน Google Sheet ก็ได้ — ข้อมูลจะถูกบันทึกลงไปโดยอัตโนมัติ
 
@@ -187,9 +194,34 @@ appsScriptUrl: "https://script.google.com/macros/s/XXXXXXXXX/exec",
 
 ---
 
+## 📊 สถานะงานล่าสุด
+
+### ✅ ทำเสร็จแล้ว
+| ส่วน | รายละเอียด |
+|---|---|
+| หน้าเว็บทั้งหมด | index, services, booking, status, about, contact |
+| ระบบจองคิว | Step Form 5 ขั้นตอน + ส่งคำขอผ่าน Apps Script |
+| ระบบตรวจสอบสถานะ | ลูกค้ากรอกเบอร์ + Booking ID เพื่อดูสถานะ |
+| Admin Dashboard | จัดการนัดหมาย + เปลี่ยนสถานะ + บันทึกหมายเหตุ |
+| จัดการบริการ | เพิ่ม/แก้ไข/ลบบริการ + ราคาหลายระดับ + อัปโหลดรูปภาพ |
+| Backend (Apps Script) | API ครบถ้วน: จอง, ตรวจสอบสถานะ, Admin CRUD |
+| SEO | sitemap.xml, robots.txt, meta tags |
+
+### 🔄 รอตั้งค่า
+| ขั้นตอน | สถานะ |
+|---|---|
+| สร้าง Google Sheet | ⏳ ต้องทำ |
+| Deploy Apps Script | ⏳ ต้องทำ |
+| ใส่ Apps Script URL ใน config.js | ⏳ ต้องทำ |
+| ตั้งค่า IMGBB_API_KEY | ⏳ ต้องทำ (สำหรับอัปโหลดรูป) |
+| Deploy ขึ้น GitHub Pages | ⏳ ต้องทำ |
+
+---
+
 ## ⚠️ หมายเหตุสำคัญ
 
 - **ไม่ใช่ระบบ "จองสำเร็จ" ทันที** — ทุกคำขอเป็น Appointment Request ที่สถานะ `pending` รอแอดมินโทรยืนยัน
 - PIN แอดมินเก็บอยู่ใน Script Properties ของ Google (ไม่ใช่ในเว็บ) — ปลอดภัยกว่าการฝังในโค้ด
 - ข้อมูลเป็นไปตาม schema ที่ระบุ: `users` → ใช้ข้อมูลในตาราง appointments แทน (ไม่มีระบบ user หลายคน ตามความต้องการร้านเล็กๆ)
 - เปลี่ยน `NOTIFY_EMAIL` เพิ่มได้ใน Script Properties เพื่อให้ระบบส่งอีเมลแจ้งเมื่อมีคำขอใหม่ (optional)
+- **รูปภาพบริการ** ใช้บริการ imgbb.com ในการโฮสต์ (ฟรี) — แอดมินแค่กดเลือกไฟล์จากระบบ

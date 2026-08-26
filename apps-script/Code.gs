@@ -45,7 +45,7 @@ var APPT_HEADERS = [
 ];
 
 var SERVICE_HEADERS = [
-  "id", "category", "name", "description", "duration", "price", "status", "created_at"
+  "id", "category", "name", "description", "duration", "price", "options", "image", "status", "created_at"
 ];
 
 /* ===================== Entry Points ===================== */
@@ -110,7 +110,9 @@ function route(payload) {
     case "adminUpdate":      return requireAdmin(payload, adminUpdate);
     case "adminNote":        return requireAdmin(payload, adminNote);
     case "adminSaveService": return requireAdmin(payload, adminSaveService);
+    case "adminDeleteService": return requireAdmin(payload, adminDeleteService);
     case "adminToggleService": return requireAdmin(payload, adminToggleService);
+    case "uploadImage":      return requireAdmin(payload, uploadImage);
 
     default:
       return fail("ไม่รู้จัก action: " + action);
@@ -334,6 +336,8 @@ function adminSaveService(p) {
   var duration = String(p.duration || "");
   var price = Number(p.price) || 0;
   var description = String(p.description || "");
+  var options = String(p.options || "");
+  var image = String(p.image || "").trim();
 
   // แก้ไขที่มีอยู่
   if (p.id) {
@@ -346,6 +350,8 @@ function adminSaveService(p) {
       row[headers.indexOf("description")] = description;
       row[headers.indexOf("duration")] = duration;
       row[headers.indexOf("price")] = price;
+      row[headers.indexOf("options")] = options;
+      row[headers.indexOf("image")] = image;
       sheet.getRange(found, 1, 1, SERVICE_HEADERS.length).setValues([row]);
       return ok({ message: "แก้ไขบริการแล้ว" });
     }
@@ -353,7 +359,7 @@ function adminSaveService(p) {
 
   // เพิ่มใหม่
   var nextId = nextServiceId(sheet);
-  var newRow = [nextId, category, name, description, duration, price, "active", new Date().toISOString()];
+  var newRow = [nextId, category, name, description, duration, price, options, image, "active", new Date().toISOString()];
   appendRow("services", newRow);
 
   return ok({ message: "เพิ่มบริการแล้ว", id: nextId });
@@ -371,6 +377,53 @@ function adminToggleService(p) {
   sheet.getRange(rowIndex, 1, 1, SERVICE_HEADERS.length).setValues([row]);
 
   return ok({ message: "อัปเดตสถานะบริการแล้ว" });
+}
+
+function adminDeleteService(p) {
+  var rowIndex = findServiceRow(String(p.id || ""));
+  if (rowIndex < 0) return fail("ไม่พบบริการ");
+
+  var sheet = getOrCreateSheet("services", SERVICE_HEADERS);
+  sheet.deleteRow(rowIndex);
+
+  return ok({ message: "ลบบริการแล้ว" });
+}
+
+function uploadImage(p) {
+  var imageData = String(p.image || "").trim();
+  if (!imageData) return fail("ไม่มีข้อมูลรูปภาพ");
+
+  var apiKey = PropertiesService.getScriptProperties().getProperty("IMGBB_API_KEY");
+  if (!apiKey) return fail("ยังไม่ได้ตั้งค่า IMGBB_API_KEY ใน Script Properties");
+
+  try {
+    var imageBlob = Utilities.newBlob(
+      Utilities.base64Decode(imageData),
+      "image/jpeg",
+      "photo.jpg"
+    );
+
+    var formData = {
+      "key": apiKey.trim(),
+      "image": imageBlob,
+    };
+
+    var response = UrlFetchApp.fetch("https://api.imgbb.com/1/upload", {
+      method: "post",
+      payload: formData,
+      muteHttpExceptions: true,
+    });
+
+    var result = JSON.parse(response.getContentText());
+
+    if (result.success) {
+      return ok({ url: result.data.url, display_url: result.data.display_url });
+    } else {
+      return fail("imgbb: " + (result.error ? result.error.message : JSON.stringify(result)));
+    }
+  } catch (e) {
+    return fail("เกิดข้อผิดพลาด: " + e.message);
+  }
 }
 
 /* ===================== Contact Message ===================== */

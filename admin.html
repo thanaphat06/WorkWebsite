@@ -206,7 +206,7 @@
       <label>หมวดหมู่</label>
       <select id="svcCategory">
         <option value="lash">ต่อขนตา</option>
-        <option value="massage">นวด</option>
+        <option value="massage">ทรีดเม้นหน้า</option>
       </select>
     </div>
     <div class="form-group">
@@ -227,6 +227,28 @@
         <input type="number" id="svcPrice" placeholder="1200" />
       </div>
     </div>
+
+    <div class="form-group">
+      <label style="display:flex; align-items:center; gap:8px; margin-bottom:8px;">ราคาหลายระดับ <span style="font-weight:400; font-size:13px; color:#888;">(ถ้ามี เช่น 3D/500, 5D/700)</span></label>
+      <div id="svcOptionsList"></div>
+      <button type="button" class="btn btn-outline btn-sm" id="btnAddOption" style="margin-top:8px;">+ เพิ่มระดับราคา</button>
+    </div>
+
+    <div class="form-group">
+      <label>รูปภาพ</label>
+      <div style="display:flex; gap:8px; align-items:center;">
+        <button type="button" class="btn btn-outline btn-sm" id="btnPickImage">เลือกรูปภาพ</button>
+        <input type="file" id="svcImageFile" accept="image/*" style="display:none;" />
+        <span id="svcImageName" style="font-size:13px; color:#888;">ยังไม่ได้เลือกรูป</span>
+      </div>
+      <input type="hidden" id="svcImage" />
+      <div id="svcImagePreview" style="margin-top:10px; display:none;">
+        <img id="svcImagePreviewImg" src="" alt="preview" style="max-width:100%; max-height:160px; border-radius:8px; object-fit:cover;" />
+        <button type="button" class="btn btn-outline btn-sm" id="btnRemoveImage" style="margin-top:6px; border-color:#d88; color:#b34040;">ลบรูป</button>
+      </div>
+      <div id="svcImageUploadStatus" style="margin-top:8px; font-size:13px; color:#888; display:none;"></div>
+    </div>
+
     <button class="btn btn-primary btn-block" id="btnSaveService">บันทึกบริการ</button>
   </div>
 </div>

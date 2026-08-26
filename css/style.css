@@ -793,3 +793,31 @@ table.admin-table { width: 100%; border-collapse: collapse; min-width: 900px; fo
 @media (prefers-reduced-motion: reduce) {
   * { animation: none !important; transition: none !important; }
 }
+
+/* ---------- Service options (price tiers) ---------- */
+.option-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 8px;
+}
+.option-row input {
+  flex: 1;
+  padding: 10px 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  font-family: var(--font-body);
+}
+.option-row input:first-child { max-width: 120px; }
+.option-row .btn-remove-option {
+  background: none;
+  border: none;
+  color: #b34040;
+  font-size: 18px;
+  padding: 4px 8px;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: background 0.2s;
+}
+.option-row .btn-remove-option:hover { background: #fde8e8; }

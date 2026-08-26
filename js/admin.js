@@ -144,6 +144,7 @@ function renderServiceTable() {
       <td>
         <button class="btn btn-outline btn-sm" data-edit-svc="${esc(s.id)}">แก้ไข</button>
         <button class="btn btn-outline btn-sm" style="border-color:#d88; color:#b34040;" data-toggle-svc="${esc(s.id)}">${s.status === "active" || !s.status ? "ปิด" : "เปิด"}</button>
+        <button class="btn btn-outline btn-sm" style="border-color:#d88; color:#b34040;" data-delete-svc="${esc(s.id)}">ลบ</button>
       </td>
     </tr>
   `).join("");
@@ -153,6 +154,9 @@ function renderServiceTable() {
   });
   tbody.querySelectorAll("[data-toggle-svc]").forEach(btn => {
     btn.addEventListener("click", () => toggleService(btn.dataset.toggleSvc));
+  });
+  tbody.querySelectorAll("[data-delete-svc]").forEach(btn => {
+    btn.addEventListener("click", () => deleteService(btn.dataset.deleteSvc));
   });
 }
 
@@ -255,6 +259,52 @@ async function saveEdit() {
 }
 
 /* ---------- Services ---------- */
+function parseOptions(str) {
+  if (!str) return [];
+  try { return JSON.parse(str); } catch (_) { return []; }
+}
+
+function renderOptionRows(options) {
+  const wrap = $("#svcOptionsList");
+  wrap.innerHTML = options.map((o, i) => `
+    <div class="option-row">
+      <input type="text" class="opt-label" placeholder="เช่น 3D" value="${esc(o.label || "")}" />
+      <input type="number" class="opt-price" placeholder="ราคา" value="${o.price || ""}" />
+      <button type="button" class="btn-remove-option" data-rm="${i}">✕</button>
+    </div>
+  `).join("");
+  wrap.querySelectorAll("[data-rm]").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const rows = wrap.querySelectorAll(".option-row");
+      rows[Number(btn.dataset.rm)].remove();
+    });
+  });
+}
+
+function addOptionRow() {
+  const wrap = $("#svcOptionsList");
+  const div = document.createElement("div");
+  div.className = "option-row";
+  div.innerHTML = `
+    <input type="text" class="opt-label" placeholder="เช่น 3D" />
+    <input type="number" class="opt-price" placeholder="ราคา" />
+    <button type="button" class="btn-remove-option">✕</button>
+  `;
+  div.querySelector(".btn-remove-option").addEventListener("click", () => div.remove());
+  wrap.appendChild(div);
+}
+
+function collectOptions() {
+  const rows = $("#svcOptionsList").querySelectorAll(".option-row");
+  const arr = [];
+  rows.forEach(row => {
+    const label = row.querySelector(".opt-label").value.trim();
+    const price = Number(row.querySelector(".opt-price").value) || 0;
+    if (label && price > 0) arr.push({ label, price });
+  });
+  return arr.length ? JSON.stringify(arr) : "";
+}
+
 function openServiceModal(id) {
   if (id) {
     const s = serviceCache.find(x => String(x.id) === String(id));
@@ -266,6 +316,17 @@ function openServiceModal(id) {
     $("#svcDesc").value = s.description || "";
     $("#svcDuration").value = s.duration || "";
     $("#svcPrice").value = s.price || "";
+    renderOptionRows(parseOptions(s.options));
+    $("#svcImage").value = s.image || "";
+    $("#svcImageFile").value = "";
+    if (s.image) {
+      $("#svcImagePreviewImg").src = s.image;
+      $("#svcImagePreview").style.display = "";
+      $("#svcImageName").textContent = s.image.split("/").pop();
+    } else {
+      $("#svcImagePreview").style.display = "none";
+      $("#svcImageName").textContent = "ยังไม่ได้เลือกรูป";
+    }
   } else {
     $("#svcModalTitle").textContent = "เพิ่มบริการ";
     $("#svcId").value = "";
@@ -274,6 +335,11 @@ function openServiceModal(id) {
     $("#svcDesc").value = "";
     $("#svcDuration").value = "";
     $("#svcPrice").value = "";
+    renderOptionRows([]);
+    $("#svcImage").value = "";
+    $("#svcImageFile").value = "";
+    $("#svcImagePreview").style.display = "none";
+    $("#svcImageName").textContent = "ยังไม่ได้เลือกรูป";
   }
   $("#serviceModal").classList.add("show");
   document.body.style.overflow = "hidden";
@@ -288,6 +354,8 @@ async function saveService() {
     description: $("#svcDesc").value.trim(),
     duration: $("#svcDuration").value.trim(),
     price: Number($("#svcPrice").value) || 0,
+    options: collectOptions(),
+    image: $("#svcImage").value.trim(),
   };
   if (!payload.name) { toast("กรุณากรอกชื่อบริการ", { gold: true }); return; }
   if (id) payload.id = id;
@@ -305,6 +373,111 @@ async function toggleService(id) {
     toast("อัปเดตสถานะบริการแล้ว");
     await loadDashboard();
   } catch (e) { toast(e.message, { gold: true }); }
+}
+
+async function deleteService(id) {
+  const s = serviceCache.find(x => String(x.id) === String(id));
+  if (!s) return;
+  if (!confirm("ลบบริการ \"" + s.name + "\" จริงหรือไม่?")) return;
+  try {
+    await apiCall("adminDeleteService", { pin: getPin(), id });
+    toast("ลบบริการแล้ว");
+    await loadDashboard();
+  } catch (e) { toast(e.message, { gold: true }); }
+}
+
+/* ---------- Image upload ---------- */
+const MAX_IMAGE_DIMENSION = 300;
+const IMAGE_QUALITY = 0.4;
+
+function resizeImage(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      const img = new Image();
+      img.onload = () => {
+        let w = img.width;
+        let h = img.height;
+        if (w > MAX_IMAGE_DIMENSION || h > MAX_IMAGE_DIMENSION) {
+          if (w > h) {
+            h = Math.round(h * MAX_IMAGE_DIMENSION / w);
+            w = MAX_IMAGE_DIMENSION;
+          } else {
+            w = Math.round(w * MAX_IMAGE_DIMENSION / h);
+            h = MAX_IMAGE_DIMENSION;
+          }
+        }
+        const canvas = document.createElement("canvas");
+        canvas.width = w;
+        canvas.height = h;
+        const ctx = canvas.getContext("2d");
+        ctx.drawImage(img, 0, 0, w, h);
+        const dataUrl = canvas.toDataURL("image/jpeg", IMAGE_QUALITY);
+        resolve(dataUrl.split(",")[1]);
+      };
+      img.onerror = reject;
+      img.src = reader.result;
+    };
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+
+function initImageUpload() {
+  const fileInput = $("#svcImageFile");
+  const pickBtn = $("#btnPickImage");
+  const removeBtn = $("#btnRemoveImage");
+  const nameEl = $("#svcImageName");
+  const preview = $("#svcImagePreview");
+  const previewImg = $("#svcImagePreviewImg");
+  const statusEl = $("#svcImageUploadStatus");
+
+  pickBtn.addEventListener("click", () => fileInput.click());
+
+  fileInput.addEventListener("change", async () => {
+    const file = fileInput.files[0];
+    if (!file) return;
+
+    if (file.size > 10 * 1024 * 1024) {
+      toast("ไฟล์รูปต้องไม่เกิน 10 MB", { gold: true });
+      fileInput.value = "";
+      return;
+    }
+
+    nameEl.textContent = file.name;
+    statusEl.style.display = "";
+    statusEl.textContent = "กำลังย่อรูป...";
+    pickBtn.disabled = true;
+
+    try {
+      const base64 = await resizeImage(file);
+      statusEl.textContent = "กำลังอัปโหลด...";
+      const data = await apiCall("uploadImage", { pin: getPin(), image: base64 });
+
+      $("#svcImage").value = data.display_url || data.url;
+      previewImg.src = data.display_url || data.url;
+      preview.style.display = "";
+      statusEl.textContent = "อัปโหลดสำเร็จ";
+      setTimeout(() => { statusEl.style.display = "none"; }, 2000);
+    } catch (e) {
+      toast("อัปโหลดไม่สำเร็จ: " + e.message, { gold: true });
+      statusEl.textContent = "";
+      statusEl.style.display = "none";
+      fileInput.value = "";
+      nameEl.textContent = "ยังไม่ได้เลือกรูป";
+    }
+    pickBtn.disabled = false;
+  });
+
+  if (removeBtn) {
+    removeBtn.addEventListener("click", () => {
+      $("#svcImage").value = "";
+      fileInput.value = "";
+      nameEl.textContent = "ยังไม่ได้เลือกรูป";
+      preview.style.display = "none";
+      previewImg.src = "";
+    });
+  }
 }
 
 /* ---------- Wire up ---------- */
@@ -336,6 +509,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
   $("#btnAddService").addEventListener("click", () => openServiceModal(null));
   $("#btnSaveService").addEventListener("click", saveService);
+  $("#btnAddOption").addEventListener("click", addOptionRow);
+  initImageUpload();
 
   if (isLoggedIn()) enterDashboard();
 });
