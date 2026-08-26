@@ -385,23 +385,22 @@ function uploadImage(p) {
     var blob = Utilities.newBlob(decoded, "image/jpeg", "photo.jpg");
 
     var formData = {
-      reqtype: "fileupload",
-      userhash: "",
-      fileToUpload: blob,
+      file: blob,
     };
 
-    var response = UrlFetchApp.fetch("https://catbox.moe/user/api.php", {
+    var response = UrlFetchApp.fetch("https://telegra.ph/upload", {
       method: "post",
       payload: formData,
       muteHttpExceptions: true,
     });
 
-    var url = response.getContentText().trim();
+    var result = JSON.parse(response.getContentText());
 
-    if (url && url.indexOf("https://") === 0) {
+    if (result[0] && result[0].src) {
+      var url = "https://telegra.ph" + result[0].src;
       return ok({ url: url, display_url: url });
     } else {
-      return fail("catbox: " + url);
+      return fail("telegraph: " + JSON.stringify(result));
     }
   } catch (e) {
     return fail("เกิดข้อผิดพลาด: " + e.message);
