@@ -1,7 +1,7 @@
 window.AppConfig = {
   // ใส่ Web App URL ที่ได้จาก Google Apps Script (ขั้นตอนใน README.md)
   // เช่น "https://script.google.com/macros/s/XXXXX/exec"
-  appsScriptUrl: "https://script.google.com/macros/s/AKfycbyUuZnygEXZ2PUfFNC33w2K7owRAWtuvwgP2RTfxVHl3rhIqwq96U78QENu8LS2SG8/exec",
+  appsScriptUrl: "https://script.google.com/macros/s/AKfycbzZLnJDB2qDmvWuPFBJsFBn2WqnqUJMjvQqiPeIxo9NsuHrPuR1AO56p78YR-aBIIZg/exec",
 
   // ชื่อร้าน (ใช้แสดงผลทั่วเว็บ)
   shopName: "THD. BEAUTY STUDIO",

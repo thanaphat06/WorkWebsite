@@ -97,16 +97,6 @@
 <script src="js/config.js"></script>
 <script src="js/main.js"></script>
 <script>
-/* บริการเริ่มต้น (แสดงถ้ายังไม่ได้เชื่อมต่อ Apps Script หรือเปิดแบบไม่มี URL) */
-const FALLBACK_SERVICES = [
-  { id: 1, category: "lash", name: "Open Lash", description: "60-90 Minute Natural Open Eye look /THB 799.- Y or 3D /THB 900.-  4D-6D/THB 1,100.-", duration: "60-90 นาที", price: 799, image: "assets/img/open-lash.jpeg" },
-  { id: 2, category: "lash", name: "Volume Lash", description: "60-75 Minutes Natural look THB 799.-", duration: "60-75 นาที", price: 799, image: "assets/img/natural-lash.jpeg" },
-  { id: 3, category: "lash", name: "Hybrid Lash", description: "60-90 Minute Natural Squirrel look /THB 799.-Y or 3D/THB 1,000. -4D-6D/THB 1,200. -", duration: "60-90 นาที", price: 799, image: "assets/img/squirrel-lash.jpeg" },
-  { id: 4, category: "lash", name: "Cat Lash", description: "60-90 Minute Natural Open Eye look /THB 799.-Y or 3D/THB 1,000. -4D-6D/THB 1,200. -", duration: "60-90 นาที", price: 799, image: "assets/img/cat-lash.png" },
-  { id: 5, category: "lash", name: "Wet Look Lash", description: "60-75 Minutes Natural Wet lookTHB 799.-", duration: "60-75 นาที", price: 799, image: "assets/img/Wet-look-lash.png" },
-  { id: 6, category: "lash", name: "Eye Lash Remover", description: "30 Minute Removal & New Set/THB 300.-45 MinutesLash Removal & Eye Care TreatmentTHB 600.-", duration: "30 or 45 นาที", price: 300, image: "assets/img/Eye-lash-remover.png" },
-];
-
 let services = [];
 let currentFilter = "all"
 
@@ -148,15 +138,10 @@ async function loadServices() {
   const grid = document.getElementById("servicesGrid");
   try {
     const data = await apiCall("getServices");
-    if (data.services && data.services.length) {
-      services = data.services;
-    } else {
-      services = FALLBACK_SERVICES;
-    }
+    services = data.services || [];
   } catch (e) {
-    // ยังไม่ได้ตั้งค่า URL → ใช้ข้อมูลตัวอย่าง
-    console.warn("ใช้ข้อมูลตัวอย่าง:", e.message);
-    services = FALLBACK_SERVICES;
+    grid.innerHTML = '<div class="empty-state"><span class="icon">⚠️</span>โหลดรายการบริการไม่สำเร็จ กรุณาลองใหม่อีกครั้ง</div>';
+    return;
   }
   renderServices();
 }

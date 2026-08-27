@@ -380,28 +380,32 @@ function uploadImage(p) {
   var imageData = String(p.image || "").trim();
   if (!imageData) return fail("ไม่มีข้อมูลรูปภาพ");
 
+  var props = PropertiesService.getScriptProperties();
+  var cloudName = props.getProperty("CLOUDINARY_CLOUD_NAME");
+  var preset    = props.getProperty("CLOUDINARY_UPLOAD_PRESET");
+  if (!cloudName || !preset) {
+    return fail("ยังไม่ได้ตั้งค่า CLOUDINARY_CLOUD_NAME / CLOUDINARY_UPLOAD_PRESET ใน Script Properties");
+  }
+
   try {
-    var decoded = Utilities.base64Decode(imageData);
-    var blob = Utilities.newBlob(decoded, "image/jpeg", "photo.jpg");
-
-    var formData = {
-      file: blob,
-    };
-
-    var response = UrlFetchApp.fetch("https://telegra.ph/upload", {
-      method: "post",
-      payload: formData,
-      muteHttpExceptions: true,
-    });
+    var response = UrlFetchApp.fetch(
+      "https://api.cloudinary.com/v1_1/" + cloudName + "/image/upload",
+      {
+        method: "post",
+        payload: {
+          file: "data:image/jpeg;base64," + imageData,  // Cloudinary รับ data URI ได้
+          upload_preset: preset,
+        },
+        muteHttpExceptions: true,
+      }
+    );
 
     var result = JSON.parse(response.getContentText());
 
-    if (result[0] && result[0].src) {
-      var url = "https://telegra.ph" + result[0].src;
-      return ok({ url: url, display_url: url });
-    } else {
-      return fail("telegraph: " + JSON.stringify(result));
+    if (result.secure_url) {
+      return ok({ url: result.secure_url, display_url: result.secure_url });
     }
+    return fail("cloudinary: " + JSON.stringify(result));
   } catch (e) {
     return fail("เกิดข้อผิดพลาด: " + e.message);
   }

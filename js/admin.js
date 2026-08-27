@@ -387,8 +387,8 @@ async function deleteService(id) {
 }
 
 /* ---------- Image upload ---------- */
-const MAX_IMAGE_DIMENSION = 300;
-const IMAGE_QUALITY = 0.4;
+const MAX_IMAGE_DIMENSION = 800;
+const IMAGE_QUALITY = 0.7;
 
 function resizeImage(file) {
   return new Promise((resolve, reject) => {
