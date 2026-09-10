@@ -41,7 +41,7 @@ async function checkStatus() {
   const box = $("#statusResult");
 
   if (!/^0\d{8,9}$/.test(phone)) { toast("กรุณากรอกเบอร์โทรศัพท์ให้ถูกต้อง", { gold: true }); return; }
-  if (!/^BK-\d+$/.test(ref)) { toast("กรุณากรอกรหัสอ้างอิงให้ถูกต้อง (เช่น BK-123456)", { gold: true }); return; }
+  if (!/^BK-\d+-\d+$/.test(ref)) { toast("กรุณากรอกรหัสอ้างอิงให้ถูกต้อง (เช่น BK-20260911-1234)", { gold: true }); return; }
 
   box.style.display = "none";
 

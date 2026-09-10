@@ -196,7 +196,7 @@ function closeModal(id) {
 /* ---------- Status actions ---------- */
 async function changeStatus(status) {
   const a = currentAppt();
-  if (!a) return;
+  if (!a) { toast("ไม่พบนัดหมายนี้ ลองรีเฟรชหน้าใหม่", { gold: true }); return; }
   try {
     const data = await apiCall("adminUpdate", {
       pin: getPin(), booking_id: a.booking_id, status,
@@ -215,7 +215,7 @@ function currentAppt() {
 /* ---------- Admin note ---------- */
 async function saveNote() {
   const a = currentAppt();
-  if (!a) return;
+  if (!a) { toast("ไม่พบนัดหมายนี้ ลองรีเฟรชหน้าใหม่", { gold: true }); return; }
   const note = $("#mAdminNote").value.trim();
   try {
     await apiCall("adminNote", { pin: getPin(), booking_id: a.booking_id, admin_note: note });
@@ -227,7 +227,7 @@ async function saveNote() {
 /* ---------- Edit appointment ---------- */
 function openEdit() {
   const a = currentAppt();
-  if (!a) return;
+  if (!a) { toast("ไม่พบนัดหมายนี้ ลองรีเฟรชหน้าใหม่", { gold: true }); return; }
   $("#eDate").value = a.appointment_date || "";
   $("#eTime").innerHTML = window.AppConfig.timeSlots.map(t =>
     `<option ${t === a.preferred_time ? "selected" : ""}>${esc(t)}</option>`).join("");
@@ -240,7 +240,7 @@ function openEdit() {
 
 async function saveEdit() {
   const a = currentAppt();
-  if (!a) return;
+  if (!a) { toast("ไม่พบนัดหมายนี้ ลองรีเฟรชหน้าใหม่", { gold: true }); return; }
   const payload = {
     pin: getPin(),
     booking_id: a.booking_id,
@@ -308,7 +308,7 @@ function collectOptions() {
 function openServiceModal(id) {
   if (id) {
     const s = serviceCache.find(x => String(x.id) === String(id));
-    if (!s) return;
+    if (!s) { toast("ไม่พบบริการนี้ ลองรีเฟรชหน้าใหม่", { gold: true }); return; }
     $("#svcModalTitle").textContent = "แก้ไขบริการ";
     $("#svcId").value = s.id;
     $("#svcCategory").value = s.category;

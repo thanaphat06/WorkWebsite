@@ -380,34 +380,16 @@ function uploadImage(p) {
   var imageData = String(p.image || "").trim();
   if (!imageData) return fail("ไม่มีข้อมูลรูปภาพ");
 
-  var props = PropertiesService.getScriptProperties();
-  var cloudName = props.getProperty("CLOUDINARY_CLOUD_NAME");
-  var preset    = props.getProperty("CLOUDINARY_UPLOAD_PRESET");
-  if (!cloudName || !preset) {
-    return fail("ยังไม่ได้ตั้งค่า CLOUDINARY_CLOUD_NAME / CLOUDINARY_UPLOAD_PRESET ใน Script Properties");
-  }
-
   try {
-    var response = UrlFetchApp.fetch(
-      "https://api.cloudinary.com/v1_1/" + cloudName + "/image/upload",
-      {
-        method: "post",
-        payload: {
-          file: "data:image/jpeg;base64," + imageData,  // Cloudinary รับ data URI ได้
-          upload_preset: preset,
-        },
-        muteHttpExceptions: true,
-      }
-    );
-
-    var result = JSON.parse(response.getContentText());
-
-    if (result.secure_url) {
-      return ok({ url: result.secure_url, display_url: result.secure_url });
-    }
-    return fail("cloudinary: " + JSON.stringify(result));
+    var blob = Utilities.newBlob(Utilities.base64Decode(imageData), "image/jpeg", "svc-" + new Date().getTime() + ".jpg");
+    var folders = DriveApp.getFoldersByName("THD_Uploads");
+    var folder = folders.hasNext() ? folders.next() : DriveApp.createFolder("THD_Uploads");
+    var file = folder.createFile(blob);
+    file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
+    var url = "https://drive.google.com/thumbnail?id=" + file.getId() + "&sz=w1000";
+    return ok({ url: url, display_url: url });
   } catch (e) {
-    return fail("เกิดข้อผิดพลาด: " + e.message);
+    return fail("อัปโหลดรูปไม่สำเร็จ: " + e.message);
   }
 }
 
@@ -473,7 +455,7 @@ function appendRow(name, values) {
 }
 
 function readRow(sheet, rowIndex) {
-  var cols = Math.max(APPT_HEADERS.length, SERVICE_HEADERS.length);
+  var cols = sheet.getName() === "services" ? SERVICE_HEADERS.length : APPT_HEADERS.length;
   return sheet.getRange(rowIndex, 1, 1, cols).getValues()[0];
 }
 
@@ -506,6 +488,12 @@ function nextServiceId(sheet) {
 }
 
 /* ===================== On install ===================== */
+
+// รันฟังก์ชันนี้ครั้งเดียวใน editor เพื่อกดอนุญาตสิทธิ์ Drive (ให้ uploadImage ทำงานได้)
+function authDrive() {
+  DriveApp.getRootFolder();
+  Logger.log("Drive authorized");
+}
 
 function setup() {
   getOrCreateSheet("appointments", APPT_HEADERS);
