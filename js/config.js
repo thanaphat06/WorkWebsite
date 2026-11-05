@@ -11,7 +11,7 @@ window.AppConfig = {
   contact: {
     phone: "0986545684",
     lineId: "ยังไม่มีช่องทางนี้",
-    email: "hello@eyesbeauty.example",
+    email: "azaz2000azlove@gmail.com",
     facebook: "https://www.facebook.com/people/THD-Beauty-Studio/61593494246633/",
     instagram: "eyesbeauty",
     tiktok: "eyesbeauty",
@@ -40,11 +40,19 @@ window.AppConfig = {
   serviceIcons: {
     lash: "✨",
     massage: "🌸",
+    product: "🛍️",
     default: "💖",
   },
 
   shopImage: {
-    hero: "", // ใส่ URL รูปจริงทีหลัง (วางใน assets/img แล้วใส่ชื่อไฟล์)
-    about: "",
+    hero: "assets/img/No.png", // ใส่ URL รูปจริงทีหลัง (วางใน assets/img แล้วใส่ชื่อไฟล์)
+    about: "ยังไม่เปิดบริการ",
+  },
+
+  // คิวอาร์โค้ดรับเงิน (วางรูป QR PromptPay ของร้านไว้ที่ assets/img/ แล้วใส่ชื่อไฟล์)
+  // ปล่อยว่าง = หน้าสั่งซื้อจะขึ้นข้อความว่ายังไม่ได้ตั้งค่า QR
+  payment: {
+    qrImage: "assets/img/No.png",
+    promptpayName: "THD. BEAUTY STUDIO",
   },
 };

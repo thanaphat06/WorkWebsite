@@ -62,7 +62,8 @@ async function checkStatus() {
     const svc = a.services_text || a.services || "-";
     const locText = a.location_type === "home"
       ? `ให้ร้านไปหาฉัน (${a.address || "-"})`
-      : a.location_type === "place" ? "ไปใช้บริการที่สถานที่นัดหมาย" : "-";
+      : a.location_type === "place" ? "ไปใช้บริการที่สถานที่นัดหมาย"
+      : a.location_type === "delivery" ? `จัดส่งสินค้า (${a.address || "-"})` : "-";
 
     box.innerHTML = `
       <div class="card status-card">

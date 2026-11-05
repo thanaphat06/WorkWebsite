@@ -41,7 +41,9 @@
     <!-- เมนูข้าง -->
     <aside class="card admin-side">
       <a href="#" data-view="appointments" class="active"><span class="icon">📋</span> นัดหมาย</a>
+      <a href="#" data-view="orders"><span class="icon">🛍️</span> ออเดอร์สินค้า</a>
       <a href="#" data-view="services"><span class="icon">💅</span> บริการ</a>
+      <a href="#" data-view="products"><span class="icon">📦</span> สินค้า</a>
       <a href="index.html"><span class="icon">🌐</span> ดูเว็บไซต์</a>
     </aside>
 
@@ -105,6 +107,53 @@
               </tr>
             </thead>
             <tbody id="serviceTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ===== ออเดอร์สินค้า ===== -->
+      <div id="view-orders" style="display:none;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; flex-wrap:wrap; gap:14px;">
+          <h2 style="font-size:24px;">ออเดอร์สินค้า</h2>
+          <button class="btn btn-dark btn-sm" id="btnRefreshOrders">รีเฟรช</button>
+        </div>
+        <div class="table-wrap">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>Booking ID</th>
+                <th>ชื่อลูกค้า</th>
+                <th>เบอร์โทร</th>
+                <th>สินค้า</th>
+                <th>ที่อยู่จัดส่ง</th>
+                <th>ยอดรวม</th>
+                <th>สถานะ</th>
+                <th>จัดการ</th>
+              </tr>
+            </thead>
+            <tbody id="orderTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ===== สินค้า ===== -->
+      <div id="view-products" style="display:none;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; flex-wrap:wrap; gap:14px;">
+          <h2 style="font-size:24px;">จัดการสินค้า</h2>
+          <button class="btn btn-primary btn-sm" id="btnAddProduct">+ เพิ่มสินค้า</button>
+        </div>
+        <div class="table-wrap">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>ชื่อสินค้า</th>
+                <th>ราคา</th>
+                <th>สถานะ</th>
+                <th>จัดการ</th>
+              </tr>
+            </thead>
+            <tbody id="productTableBody"></tbody>
           </table>
         </div>
       </div>
@@ -202,23 +251,24 @@
     <button class="modal-close" id="svcClose">✕</button>
     <h2 style="font-size:22px; margin-bottom:20px;" id="svcModalTitle">เพิ่มบริการ</h2>
     <input type="hidden" id="svcId" />
-    <div class="form-group">
+    <div class="form-group" id="svcCategoryGroup">
       <label>หมวดหมู่</label>
       <select id="svcCategory">
         <option value="lash">ต่อขนตา</option>
         <option value="massage">ทรีดเม้นหน้า</option>
+        <option value="product">สินค้า</option>
       </select>
     </div>
     <div class="form-group">
       <label>ชื่อบริการ</label>
-      <input type="text" id="svcName" placeholder="เช่น Volume Lash" />
+      <input type="text" id="svcName" placeholder="เช่น Volume Lash หรือชื่อสินค้า" />
     </div>
     <div class="form-group">
       <label>รายละเอียด</label>
       <textarea id="svcDesc" placeholder="รายละเอียดสั้น ๆ ของบริการ"></textarea>
     </div>
     <div class="form-row">
-      <div class="form-group">
+      <div class="form-group" id="svcDurationGroup">
         <label>ระยะเวลา</label>
         <input type="text" id="svcDuration" placeholder="เช่น 120 นาที" />
       </div>
@@ -228,7 +278,7 @@
       </div>
     </div>
 
-    <div class="form-group">
+    <div class="form-group" id="svcOptionsGroup">
       <label style="display:flex; align-items:center; gap:8px; margin-bottom:8px;">ราคาหลายระดับ <span style="font-weight:400; font-size:13px; color:#888;">(ถ้ามี เช่น 3D/500, 5D/700)</span></label>
       <div id="svcOptionsList"></div>
       <button type="button" class="btn btn-outline btn-sm" id="btnAddOption" style="margin-top:8px;">+ เพิ่มระดับราคา</button>

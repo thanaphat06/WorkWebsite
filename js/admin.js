@@ -4,7 +4,11 @@ const ADMIN_PIN_KEY = "eyes_admin_pin";
 const ADMIN_SESSION_KEY = "eyes_admin_logged_in";
 
 const apptCache = { list: [] };
+const ordersCache = { list: [] };
 let serviceCache = [];
+let productCache = [];
+let detailCollection = "appointments"; // modal รายละเอียดกำลังดูชีทไหน (appointments | orders)
+let catalogMode = "services";          // modal บริการ/สินค้า กำลังแก้ชีทไหน (services | products)
 
 function getPin() { return sessionStorage.getItem(ADMIN_PIN_KEY) || ""; }
 function isLoggedIn() { return sessionStorage.getItem(ADMIN_SESSION_KEY) === "1"; }
@@ -22,8 +26,10 @@ function statusBadge(status) {
 function showView(name) {
   document.querySelectorAll(".admin-side a").forEach(a =>
     a.classList.toggle("active", a.dataset.view === name));
-  document.getElementById("view-appointments").style.display = name === "appointments" ? "" : "none";
-  document.getElementById("view-services").style.display = name === "services" ? "" : "none";
+  ["appointments", "orders", "services", "products"].forEach(v => {
+    const el = document.getElementById("view-" + v);
+    if (el) el.style.display = v === name ? "" : "none";
+  });
 }
 
 /* ---------- Login / Logout ---------- */
@@ -57,15 +63,21 @@ function enterDashboard() {
 /* ---------- Dashboard data ---------- */
 async function loadDashboard() {
   try {
-    const [apptData, svcData] = await Promise.all([
+    const [apptData, orderData, svcData, prodData] = await Promise.all([
       apiCall("adminList", { pin: getPin() }),
+      apiCall("adminListOrders", { pin: getPin() }),
       apiCall("getServices"),
+      apiCall("getProducts"),
     ]);
     apptCache.list = apptData.appointments || [];
+    ordersCache.list = orderData.orders || [];
     serviceCache = svcData.services || [];
+    productCache = prodData.products || [];
     renderSummary();
     renderTable();
+    renderOrderTable();
     renderServiceTable();
+    renderProductTable();
   } catch (e) {
     toast(e.message, { gold: true });
     logout();
@@ -93,6 +105,7 @@ function renderSummary() {
 function locLabel(a) {
   if (a.location_type === "home") return "ไปหาลูกค้า";
   if (a.location_type === "place") return "สถานที่นัดหมาย";
+  if (a.location_type === "delivery") return "จัดส่งสินค้า";
   return "-";
 }
 
@@ -136,7 +149,7 @@ function renderServiceTable() {
   tbody.innerHTML = serviceCache.map(s => `
     <tr>
       <td class="bold">${esc(s.id)}</td>
-      <td>${esc(s.category === "massage" ? "นวด" : "ต่อขนตา")}</td>
+      <td>${esc(s.category === "lash" ? "ต่อขนตา" : s.category === "product" ? "ขายของ" : "นวด")}</td>
       <td>${esc(s.name)}</td>
       <td>${esc(s.duration)}</td>
       <td class="bold">${fmtMoney(s.price)}</td>
@@ -160,10 +173,72 @@ function renderServiceTable() {
   });
 }
 
-/* ---------- Detail modal ---------- */
-function findAppt(id) { return apptCache.list.find(a => a.booking_id === id); }
+function renderOrderTable() {
+  const tbody = $("#orderTableBody");
+  const list = ordersCache.list.slice().sort((x, y) =>
+    String(y.created_at || "").localeCompare(String(x.created_at || "")));
 
-function openDetail(id) {
+  if (!list.length) {
+    tbody.innerHTML = `<tr><td colspan="8"><div class="empty-state"><span class="icon">🛍️</span>ยังไม่มีออเดอร์สินค้า</div></td></tr>`;
+    return;
+  }
+  tbody.innerHTML = list.map(a => `
+    <tr>
+      <td class="bold">${esc(a.booking_id)}</td>
+      <td>${esc(a.name)}</td>
+      <td><a href="tel:${esc(a.phone)}">${esc(a.phone)}</a></td>
+      <td>${esc((a.services_text || a.services || "-"))}</td>
+      <td class="muted">${esc(a.address || "-")}</td>
+      <td class="bold">${a.estimated_total ? fmtMoney(a.estimated_total) : "-"}</td>
+      <td>${statusBadge(a.status)}</td>
+      <td><button class="btn btn-dark btn-sm" data-open-order="${esc(a.booking_id)}">ดูรายละเอียด</button></td>
+    </tr>
+  `).join("");
+
+  tbody.querySelectorAll("[data-open-order]").forEach(btn => {
+    btn.addEventListener("click", () => openDetail(btn.dataset.openOrder, "orders"));
+  });
+}
+
+function renderProductTable() {
+  const tbody = $("#productTableBody");
+  if (!productCache.length) {
+    tbody.innerHTML = `<tr><td colspan="5"><div class="empty-state">ยังไม่มีสินค้า</div></td></tr>`;
+    return;
+  }
+  tbody.innerHTML = productCache.map(s => `
+    <tr>
+      <td class="bold">${esc(s.id)}</td>
+      <td>${esc(s.name)}</td>
+      <td class="bold">${fmtMoney(s.price)}</td>
+      <td>${s.status === "active" || !s.status ? '<span class="status-badge status-completed">ใช้งาน</span>' : '<span class="status-badge status-cancelled">ปิด</span>'}</td>
+      <td>
+        <button class="btn btn-outline btn-sm" data-edit-prod="${esc(s.id)}">แก้ไข</button>
+        <button class="btn btn-outline btn-sm" style="border-color:#d88; color:#b34040;" data-toggle-prod="${esc(s.id)}">${s.status === "active" || !s.status ? "ปิด" : "เปิด"}</button>
+        <button class="btn btn-outline btn-sm" style="border-color:#d88; color:#b34040;" data-delete-prod="${esc(s.id)}">ลบ</button>
+      </td>
+    </tr>
+  `).join("");
+
+  tbody.querySelectorAll("[data-edit-prod]").forEach(btn => {
+    btn.addEventListener("click", () => openServiceModal(btn.dataset.editProd, "products"));
+  });
+  tbody.querySelectorAll("[data-toggle-prod]").forEach(btn => {
+    btn.addEventListener("click", () => toggleCatalog(btn.dataset.toggleProd, "products"));
+  });
+  tbody.querySelectorAll("[data-delete-prod]").forEach(btn => {
+    btn.addEventListener("click", () => deleteCatalog(btn.dataset.deleteProd, "products"));
+  });
+}
+
+/* ---------- Detail modal ---------- */
+function findAppt(id) {
+  const cache = detailCollection === "orders" ? ordersCache.list : apptCache.list;
+  return cache.find(a => a.booking_id === id);
+}
+
+function openDetail(id, collection) {
+  detailCollection = collection === "orders" ? "orders" : "appointments";
   const a = findAppt(id);
   if (!a) { toast("ไม่พบข้อมูล", { gold: true }); return; }
 
@@ -177,7 +252,7 @@ function openDetail(id) {
   $("#mTotal").textContent = a.estimated_total ? fmtMoney(a.estimated_total) : "-";
   $("#mDate").textContent = formatDateThai(a.appointment_date);
   $("#mTime").textContent = a.preferred_time || "-";
-  $("#mLocType").textContent = a.location_type === "home" ? "ให้ร้านไปหาลูกค้า" : a.location_type === "place" ? "ไปใช้บริการที่สถานที่นัดหมาย" : "-";
+  $("#mLocType").textContent = a.location_type === "home" ? "ให้ร้านไปหาลูกค้า" : a.location_type === "place" ? "ไปใช้บริการที่สถานที่นัดหมาย" : a.location_type === "delivery" ? "จัดส่งสินค้า" : "-";
   $("#mAddress").textContent = a.address || "-";
   $("#mLocDetail").textContent = a.location_detail || "-";
   $("#mNote").textContent = a.note || "-";
@@ -199,7 +274,7 @@ async function changeStatus(status) {
   if (!a) { toast("ไม่พบนัดหมายนี้ ลองรีเฟรชหน้าใหม่", { gold: true }); return; }
   try {
     const data = await apiCall("adminUpdate", {
-      pin: getPin(), booking_id: a.booking_id, status,
+      pin: getPin(), booking_id: a.booking_id, status, collection: detailCollection,
     });
     toast(data.message || "อัปเดตสถานะแล้ว");
     closeModal("apptModal");
@@ -218,7 +293,7 @@ async function saveNote() {
   if (!a) { toast("ไม่พบนัดหมายนี้ ลองรีเฟรชหน้าใหม่", { gold: true }); return; }
   const note = $("#mAdminNote").value.trim();
   try {
-    await apiCall("adminNote", { pin: getPin(), booking_id: a.booking_id, admin_note: note });
+    await apiCall("adminNote", { pin: getPin(), booking_id: a.booking_id, admin_note: note, collection: detailCollection });
     toast("บันทึกหมายเหตุแล้ว");
     a.admin_note = note;
   } catch (e) { toast(e.message, { gold: true }); }
@@ -244,6 +319,7 @@ async function saveEdit() {
   const payload = {
     pin: getPin(),
     booking_id: a.booking_id,
+    collection: detailCollection,
     appointment_date: $("#eDate").value,
     preferred_time: $("#eTime").value,
     location_type: $("#eLocType").value,
@@ -305,13 +381,18 @@ function collectOptions() {
   return arr.length ? JSON.stringify(arr) : "";
 }
 
-function openServiceModal(id) {
+function openServiceModal(id, mode) {
+  catalogMode = mode === "products" ? "products" : "services";
+  const isProductMode = catalogMode === "products";
+  const noun = isProductMode ? "สินค้า" : "บริการ";
+  const cache = isProductMode ? productCache : serviceCache;
+
   if (id) {
-    const s = serviceCache.find(x => String(x.id) === String(id));
-    if (!s) { toast("ไม่พบบริการนี้ ลองรีเฟรชหน้าใหม่", { gold: true }); return; }
-    $("#svcModalTitle").textContent = "แก้ไขบริการ";
+    const s = cache.find(x => String(x.id) === String(id));
+    if (!s) { toast("ไม่พบ" + noun + "นี้ ลองรีเฟรชหน้าใหม่", { gold: true }); return; }
+    $("#svcModalTitle").textContent = "แก้ไข" + noun;
     $("#svcId").value = s.id;
-    $("#svcCategory").value = s.category;
+    $("#svcCategory").value = isProductMode ? "product" : s.category;
     $("#svcName").value = s.name;
     $("#svcDesc").value = s.description || "";
     $("#svcDuration").value = s.duration || "";
@@ -328,9 +409,9 @@ function openServiceModal(id) {
       $("#svcImageName").textContent = "ยังไม่ได้เลือกรูป";
     }
   } else {
-    $("#svcModalTitle").textContent = "เพิ่มบริการ";
+    $("#svcModalTitle").textContent = "เพิ่ม" + noun;
     $("#svcId").value = "";
-    $("#svcCategory").value = "lash";
+    $("#svcCategory").value = isProductMode ? "product" : "lash";
     $("#svcName").value = "";
     $("#svcDesc").value = "";
     $("#svcDuration").value = "";
@@ -341,50 +422,68 @@ function openServiceModal(id) {
     $("#svcImagePreview").style.display = "none";
     $("#svcImageName").textContent = "ยังไม่ได้เลือกรูป";
   }
+  // โหมดสินค้า: ซ่อนช่องหมวดหมู่ (บังคับเป็น product อยู่แล้ว)
+  $("#svcCategoryGroup").style.display = isProductMode ? "none" : "";
+  toggleProductFields();
   $("#serviceModal").classList.add("show");
   document.body.style.overflow = "hidden";
 }
 
+// หมวดสินค้า (product) ไม่ต้องมีระยะเวลา + ราคาหลายระดับ
+function toggleProductFields() {
+  const isProduct = $("#svcCategory").value === "product";
+  $("#svcDurationGroup").style.display = isProduct ? "none" : "";
+  $("#svcOptionsGroup").style.display = isProduct ? "none" : "";
+}
+
 async function saveService() {
   const id = $("#svcId").value;
+  const isProduct = catalogMode === "products" || $("#svcCategory").value === "product";
+  const noun = isProduct ? "สินค้า" : "บริการ";
   const payload = {
     pin: getPin(),
-    category: $("#svcCategory").value,
+    category: isProduct ? "product" : $("#svcCategory").value,
     name: $("#svcName").value.trim(),
     description: $("#svcDesc").value.trim(),
-    duration: $("#svcDuration").value.trim(),
+    duration: isProduct ? "" : $("#svcDuration").value.trim(),
     price: Number($("#svcPrice").value) || 0,
-    options: collectOptions(),
+    options: isProduct ? "" : collectOptions(),
     image: $("#svcImage").value.trim(),
   };
-  if (!payload.name) { toast("กรุณากรอกชื่อบริการ", { gold: true }); return; }
+  if (!payload.name) { toast("กรุณากรอกชื่อ" + noun, { gold: true }); return; }
   if (id) payload.id = id;
   try {
-    await apiCall("adminSaveService", payload);
-    toast("บันทึกบริการแล้ว");
+    await apiCall(catalogMode === "products" ? "adminSaveProduct" : "adminSaveService", payload);
+    toast("บันทึก" + noun + "แล้ว");
     closeModal("serviceModal");
     await loadDashboard();
   } catch (e) { toast(e.message, { gold: true }); }
 }
 
-async function toggleService(id) {
+async function toggleCatalog(id, mode) {
   try {
-    await apiCall("adminToggleService", { pin: getPin(), id });
-    toast("อัปเดตสถานะบริการแล้ว");
+    await apiCall(mode === "products" ? "adminToggleProduct" : "adminToggleService", { pin: getPin(), id });
+    toast("อัปเดตสถานะแล้ว");
     await loadDashboard();
   } catch (e) { toast(e.message, { gold: true }); }
 }
 
-async function deleteService(id) {
-  const s = serviceCache.find(x => String(x.id) === String(id));
+async function deleteCatalog(id, mode) {
+  const cache = mode === "products" ? productCache : serviceCache;
+  const noun = mode === "products" ? "สินค้า" : "บริการ";
+  const s = cache.find(x => String(x.id) === String(id));
   if (!s) return;
-  if (!confirm("ลบบริการ \"" + s.name + "\" จริงหรือไม่?")) return;
+  if (!confirm("ลบ" + noun + " \"" + s.name + "\" จริงหรือไม่?")) return;
   try {
-    await apiCall("adminDeleteService", { pin: getPin(), id });
-    toast("ลบบริการแล้ว");
+    await apiCall(mode === "products" ? "adminDeleteProduct" : "adminDeleteService", { pin: getPin(), id });
+    toast("ลบ" + noun + "แล้ว");
     await loadDashboard();
   } catch (e) { toast(e.message, { gold: true }); }
 }
+
+// ชื่อเดิมที่ตาราง "บริการ" ใช้ ให้ชี้ไปตัว generic
+function toggleService(id) { return toggleCatalog(id, "services"); }
+function deleteService(id) { return deleteCatalog(id, "services"); }
 
 /* ---------- Image upload ---------- */
 const MAX_IMAGE_DIMENSION = 800;
@@ -507,9 +606,12 @@ document.addEventListener("DOMContentLoaded", () => {
   $("#btnEditAppt").addEventListener("click", openEdit);
   $("#btnSaveEdit").addEventListener("click", saveEdit);
 
-  $("#btnAddService").addEventListener("click", () => openServiceModal(null));
+  $("#btnAddService").addEventListener("click", () => openServiceModal(null, "services"));
+  $("#btnAddProduct").addEventListener("click", () => openServiceModal(null, "products"));
+  $("#btnRefreshOrders").addEventListener("click", loadDashboard);
   $("#btnSaveService").addEventListener("click", saveService);
   $("#btnAddOption").addEventListener("click", addOptionRow);
+  $("#svcCategory").addEventListener("change", toggleProductFields);
   initImageUpload();
 
   if (isLoggedIn()) enterDashboard();
