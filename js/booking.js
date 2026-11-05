@@ -43,7 +43,7 @@ function renderServices() {
   }
   list.innerHTML = state.services.map(s => {
     const id = String(s.id);
-    const catLabel = s.category === "massage" ? "นวด" : "ต่อขนตา";
+    const catLabel = s.category === "lash" ? "ต่อขนตา" : s.category === "product" ? "สินค้า" : "นวด";
     const selected = state.selectedServices.has(id) ? "selected" : "";
     return `
     <div class="service-pick ${selected}" data-id="${id}">

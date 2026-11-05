@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>สั่งซื้อสินค้า | THD. BEAUTY STUDIO</title>
+<meta name="description" content="สั่งซื้อสินค้าจากร้าน THD. BEAUTY STUDIO กรอกที่อยู่จัดส่งและโอนเงินผ่าน QR" />
+<meta name="robots" content="index, follow" />
+<link rel="icon" type="image/png" href="assets/img/logo.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&family=Noto+Sans+Thai:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+<header class="header">
+  <div class="container nav">
+    <a href="index.html" class="logo"><img src="assets/img/logo.png" alt="" class="logo-img" width="28" height="28"><span>THD. BEAUTY STUDIO</span></a>
+    <nav>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="services.html">Services</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="contact.html">Contact</a></li>
+        <li><a href="booking.html" class="btn btn-primary">จองบริการ</a></li>
+      </ul>
+    </nav>
+    <button class="nav-toggle" id="navToggle" aria-label="เมนู">☰</button>
+  </div>
+</header>
+
+<section class="page-head">
+  <div class="container">
+    <span class="eyebrow">Order</span>
+    <h1>สั่งซื้อสินค้า</h1>
+    <p>กรอกที่อยู่จัดส่ง แล้วสแกน QR เพื่อโอนเงิน — ทางร้านจะติดต่อกลับเพื่อยืนยันคำสั่งซื้อ</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container booking-wrap">
+
+    <!-- ========== ฟอร์มสั่งซื้อ ========== -->
+    <div class="card booking-card">
+
+      <!-- ฟอร์ม -->
+      <div id="orderForm">
+        <h2 class="step-title">ข้อมูลผู้สั่งซื้อ</h2>
+        <p class="step-desc">ทางร้านจะใช้ข้อมูลนี้เพื่อติดต่อยืนยันและจัดส่ง</p>
+
+        <div class="form-group">
+          <label for="oName">ชื่อ-นามสกุล <span class="req">*</span></label>
+          <input type="text" id="oName" placeholder="เช่น ณัฐกานต์ วงศ์สกุล" />
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="oPhone">เบอร์โทรศัพท์ <span class="req">*</span></label>
+            <input type="tel" id="oPhone" placeholder="เช่น 081-234-5678" maxlength="10" />
+          </div>
+          <div class="form-group">
+            <label for="oLine">LINE ID <small>(ถ้ามี)</small></label>
+            <input type="text" id="oLine" placeholder="เช่น beautyqueen" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="oAddress">ที่อยู่จัดส่ง <span class="req">*</span></label>
+          <textarea id="oAddress" placeholder="บ้านเลขที่ / หมู่บ้าน-คอนโด / ถนน / แขวง-ตำบล / เขต-อำเภอ / จังหวัด / รหัสไปรษณีย์"></textarea>
+        </div>
+        <div class="form-group">
+          <label for="oNote">หมายเหตุถึงร้าน <small>(ถ้ามี)</small></label>
+          <input type="text" id="oNote" placeholder="เช่น ฝากไว้ที่ป้อมยาม / โทรก่อนส่ง" />
+        </div>
+
+        <!-- ชำระเงิน -->
+        <h2 class="step-title" style="margin-top:28px;">ชำระเงินโดยสแกน QR</h2>
+        <p class="step-desc">สแกน QR ด้านล่างเพื่อโอนยอดรวม แล้วกด "ยืนยันการสั่งซื้อ" (ทางร้านจะตรวจสอบการชำระเงินอีกครั้ง)</p>
+        <div class="pay-box" id="payBox">
+          <img id="payQR" src="" alt="QR ชำระเงิน" />
+          <div class="pay-info">
+            <div class="pay-name" id="payName">—</div>
+            <div class="pay-amount">ยอดโอน: <strong id="payAmount">—</strong></div>
+            <div class="side-hint" style="margin-top:12px;">ℹ️ หลังโอนแล้วกดยืนยันได้เลย ตอนนี้ยังไม่มีระบบตรวจสลิปอัตโนมัติ ทางร้านจะเช็กยอดและติดต่อกลับ</div>
+          </div>
+        </div>
+
+        <div class="form-nav" style="margin-top:28px;">
+          <a href="services.html" class="btn btn-outline">ย้อนกลับ</a>
+          <button class="btn btn-gold btn-lg" id="btnOrder" type="button">ยืนยันการสั่งซื้อ</button>
+        </div>
+      </div>
+
+      <!-- ผลลัพธ์ -->
+      <div id="orderDone" style="display:none;">
+        <div class="success">
+          <div class="success-icon">✓</div>
+          <h2>รับคำสั่งซื้อเรียบร้อยแล้ว</h2>
+          <p style="color:var(--muted);">ขอบคุณสำหรับการสั่งซื้อ<br/>ทางร้านจะตรวจสอบการชำระเงินและติดต่อกลับเพื่อยืนยันการจัดส่ง</p>
+          <div class="ref" id="refCode">BK-000000</div>
+          <p style="color:var(--muted); font-size:14px;">โปรดบันทึกรหัสอ้างอิงไว้ใช้ตรวจสอบสถานะ</p>
+          <div style="margin-top:8px;"><span class="status-badge status-pending">รอยืนยัน</span></div>
+          <div class="form-nav" style="justify-content:center;">
+            <a href="status.html" class="btn btn-outline">ตรวจสอบสถานะ</a>
+            <a href="index.html" class="btn btn-primary">กลับหน้าหลัก</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== สรุปสินค้า ========== -->
+    <aside class="booking-side">
+      <div class="card side-summary">
+        <h3 style="font-size:20px; margin-bottom:14px;">สรุปคำสั่งซื้อ</h3>
+        <div id="sideProduct" class="ss-row"><span class="ss-label">สินค้า</span><span>—</span></div>
+        <div class="ss-row"><span class="ss-label">ยอดรวม</span><span class="ss-total" id="sideTotal">—</span></div>
+        <div class="side-hint">ℹ️ ค่าจัดส่ง (ถ้ามี) ทางร้านจะแจ้งตอนติดต่อกลับยืนยัน</div>
+      </div>
+    </aside>
+
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="container footer-grid">
+    <div>
+      <a href="index.html" class="logo"><img src="assets/img/logo.png" alt="" class="logo-img" width="28" height="28"><span>THD. BEAUTY STUDIO</span></a>
+      <p style="margin-top:14px; font-size:14.5px;">บริการต่อขนตาและนวดแบบนัดหมายถึงที่ เพื่อความสวยและการผ่อนคลายในแบบของคุณ</p>
+    </div>
+    <div>
+      <h4>เมนู</h4>
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="services.html">Services</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>บริการ</h4>
+      <ul>
+        <li><a href="services.html">ต่อขนตา</a></li>
+        <li><a href="services.html">นวดผ่อนคลาย</a></li>
+        <li><a href="status.html">ตรวจสอบสถานะ</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>ติดต่อ</h4>
+      <ul>
+        <li>โทร: <a href="tel:0986545684">0986545684</a></li>
+        <li>LINE: ยังไม่มีช่องทางนี้</li>
+        <li>Facebook: <a href="https://www.facebook.com/people/THD-Beauty-Studio/61593494246633/" target="_blank" rel="noopener">THD Beauty Studio</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div class="container">© <span class="year"></span> THD. BEAUTY STUDIO — ต่อขนตา &amp; นวด นัดหมายถึงที่</div>
+  </div>
+</footer>
+
+<script src="js/config.js"></script>
+<script src="js/main.js"></script>
+<script src="js/order.js"></script>
+</body>
+</html>

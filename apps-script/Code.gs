@@ -48,6 +48,21 @@ var SERVICE_HEADERS = [
   "id", "category", "name", "description", "duration", "price", "options", "image", "status", "created_at"
 ];
 
+// สินค้าใช้โครงคอลัมน์เดียวกับบริการ, ออเดอร์ใช้โครงเดียวกับนัดหมาย (reuse rowToObj/helpers)
+var PRODUCT_HEADERS = SERVICE_HEADERS;
+var ORDER_HEADERS = APPT_HEADERS;
+var MESSAGE_HEADERS = ["created_at", "name", "phone", "line_id", "topic", "message"];
+
+var SHEET_HEADERS = {
+  appointments: APPT_HEADERS,
+  orders: ORDER_HEADERS,
+  services: SERVICE_HEADERS,
+  products: PRODUCT_HEADERS,
+  messages: MESSAGE_HEADERS,
+};
+
+function headersFor(name) { return SHEET_HEADERS[name] || []; }
+
 /* ===================== Entry Points ===================== */
 
 function doGet(e) {
@@ -98,16 +113,21 @@ function route(payload) {
 
   switch (action) {
     case "getServices":      return getServices();
+    case "getProducts":      return getProducts();
     case "createRequest":    return createRequest(payload);
     case "checkStatus":      return checkStatus(payload);
     case "contactMessage":   return contactMessage(payload);
     case "adminLogin":       return adminLogin(payload);
     case "adminList":        return requireAdmin(payload, adminList);
+    case "adminListOrders":  return requireAdmin(payload, adminListOrders);
     case "adminUpdate":      return requireAdmin(payload, adminUpdate);
     case "adminNote":        return requireAdmin(payload, adminNote);
     case "adminSaveService": return requireAdmin(payload, adminSaveService);
     case "adminDeleteService": return requireAdmin(payload, adminDeleteService);
     case "adminToggleService": return requireAdmin(payload, adminToggleService);
+    case "adminSaveProduct":   return requireAdmin(payload, adminSaveProduct);
+    case "adminDeleteProduct": return requireAdmin(payload, adminDeleteProduct);
+    case "adminToggleProduct": return requireAdmin(payload, adminToggleProduct);
     case "uploadImage":      return requireAdmin(payload, uploadImage);
 
     default:
@@ -131,9 +151,21 @@ function getServices() {
       return rowToObj(SERVICE_HEADERS, r, i + 1);
     })
     .filter(function (s) {
-      return s.name;
+      return s.name && s.category !== "product"; // สินค้าอยู่ในชีท products แล้ว
     });
   return ok({ services: list });
+}
+
+function getProducts() {
+  var rows = readSheet("products");
+  var list = rows.slice(1).filter(function (r) { return r.length > 0; })
+    .map(function (r, i) {
+      return rowToObj(PRODUCT_HEADERS, r, i + 1);
+    })
+    .filter(function (s) {
+      return s.name;
+    });
+  return ok({ products: list });
 }
 
 function rowToObj(headers, row, index) {
@@ -154,12 +186,18 @@ function createRequest(p) {
   var time = String(p.preferred_time || "").trim();
   var locType = String(p.location_type || "");
 
+  var isOrder = (locType === "delivery"); // คำสั่งซื้อสินค้า (ไม่มีวัน/เวลา/สถานที่บริการ)
+
   if (!name) return fail("กรุณากรอกชื่อ");
   if (!/^0\d{8,9}$/.test(phone)) return fail("เบอร์โทรศัพท์ไม่ถูกต้อง");
-  if (!services.length) return fail("กรุณาเลือกบริการอย่างน้อย 1 รายการ");
-  if (!date) return fail("กรุณาเลือกวันที่");
-  if (!time) return fail("กรุณาเลือกช่วงเวลา");
-  if (locType !== "home" && locType !== "place") return fail("กรุณาเลือกสถานที่ให้บริการ");
+  if (!services.length) return fail("กรุณาเลือกสินค้า/บริการอย่างน้อย 1 รายการ");
+  if (isOrder) {
+    if (!String(p.address || "").trim()) return fail("กรุณากรอกที่อยู่จัดส่ง");
+  } else {
+    if (!date) return fail("กรุณาเลือกวันที่");
+    if (!time) return fail("กรุณาเลือกช่วงเวลา");
+    if (locType !== "home" && locType !== "place") return fail("กรุณาเลือกสถานที่ให้บริการ");
+  }
 
   var bookingId = generateBookingId();
 
@@ -170,7 +208,7 @@ function createRequest(p) {
     var price = Number(s.price) || 0;
     total += price;
     serviceNames.push(String(s.name || ""));
-    serviceText.push((s.category === "massage" ? "นวด: " : "ต่อขนตา: ") + (s.name || "") + " (" + price + " บาท)");
+    serviceText.push((s.category === "lash" ? "ต่อขนตา: " : s.category === "product" ? "สินค้า: " : "นวด: ") + (s.name || "") + " (" + price + " บาท)");
   });
 
   var now = new Date();
@@ -195,25 +233,28 @@ function createRequest(p) {
     now.toISOString()
   ];
 
-  appendRow("appointments", row);
+  appendRow(isOrder ? "orders" : "appointments", row);
 
   try {
     var notifyEmail = PropertiesService.getScriptProperties().getProperty("NOTIFY_EMAIL");
     if (notifyEmail) {
+      var locLine = isOrder
+        ? "จัดส่งถึง: " + String(p.address || "")
+        : (locType === "home" ? "ให้ร้านไปหา - " + p.address : "ไปสถานที่นัดหมาย");
       MailApp.sendEmail({
         to: notifyEmail,
-        subject: "คำขอนัดหมายใหม่: " + bookingId + " (" + name + ")",
+        subject: (isOrder ? "คำสั่งซื้อสินค้าใหม่: " : "คำขอนัดหมายใหม่: ") + bookingId + " (" + name + ")",
         body:
-          "คำขอนัดหมายใหม่\n" +
+          (isOrder ? "คำสั่งซื้อสินค้าใหม่\n" : "คำขอนัดหมายใหม่\n") +
           "รหัส: " + bookingId + "\n" +
           "ชื่อ: " + name + "\n" +
           "โทร: " + phone + "\n" +
           "LINE: " + (p.line_id || "-") + "\n" +
-          "บริการ: " + serviceNames.join(", ") + "\n" +
-          "วันที่: " + date + "\n" +
-          "ช่วงเวลา: " + time + "\n" +
-          "สถานที่: " + (locType === "home" ? "ให้ร้านไปหา - " + p.address : "ไปสถานที่นัดหมาย") + "\n" +
-          "จำนวนคน: " + p.number_of_people + "\n" +
+          (isOrder ? "สินค้า: " : "บริการ: ") + serviceNames.join(", ") + "\n" +
+          (isOrder ? "" : "วันที่: " + date + "\nช่วงเวลา: " + time + "\n") +
+          locLine + "\n" +
+          "ยอดรวม: " + total + " บาท\n" +
+          (p.note ? "หมายเหตุ: " + p.note + "\n" : "") +
           "ตรวจสอบได้ที่ Google Sheet"
       });
     }
@@ -238,17 +279,22 @@ function checkStatus(p) {
   var phone = String(p.phone || "").trim();
   var bookingId = String(p.booking_id || "").trim().toUpperCase();
 
-  var rows = readSheet("appointments");
+  var hit = findStatusIn("appointments", bookingId, phone) || findStatusIn("orders", bookingId, phone);
+  return ok({ appointment: hit });
+}
+
+function findStatusIn(sheetName, bookingId, phone) {
+  var rows = readSheet(sheetName);
   for (var i = 1; i < rows.length; i++) {
     var r = rows[i];
     if (!r[0]) continue;
     if (String(r[0]).toUpperCase() === bookingId && String(r[2]).trim() === phone) {
       var a = rowToObj(APPT_HEADERS, r, i + 1);
       a.booking_id = String(a.booking_id).toUpperCase();
-      return ok({ appointment: a });
+      return a;
     }
   }
-  return ok({ appointment: null });
+  return null;
 }
 
 /* ===================== Admin ===================== */
@@ -271,12 +317,26 @@ function adminList() {
   return ok({ appointments: list });
 }
 
-function adminUpdate(p) {
-  var bookingId = String(p.booking_id || "").toUpperCase();
-  var rowIndex = findAppointmentRow(bookingId);
-  if (rowIndex < 0) return fail("ไม่พบคำขอนัดหมาย: " + bookingId);
+function adminListOrders() {
+  var rows = readSheet("orders");
+  var list = rows.slice(1)
+    .filter(function (r) { return r.length > 0 && r[0]; })
+    .map(function (r, i) { return rowToObj(ORDER_HEADERS, r, i + 1); });
 
-  var sheet = SPREADSHEET().getSheetByName("appointments");
+  list.sort(function (a, b) {
+    return String(b.created_at || "").localeCompare(String(a.created_at || ""));
+  });
+
+  return ok({ orders: list });
+}
+
+function adminUpdate(p) {
+  var sheetName = collectionOf(p);
+  var bookingId = String(p.booking_id || "").toUpperCase();
+  var rowIndex = findAppointmentRow(bookingId, sheetName);
+  if (rowIndex < 0) return fail("ไม่พบรายการ: " + bookingId);
+
+  var sheet = SPREADSHEET().getSheetByName(sheetName);
   var headers = sheet.getRange(1, 1, 1, APPT_HEADERS.length).getValues()[0];
   var current = readRow(sheet, rowIndex);
 
@@ -298,11 +358,12 @@ function adminUpdate(p) {
 }
 
 function adminNote(p) {
+  var sheetName = collectionOf(p);
   var bookingId = String(p.booking_id || "").toUpperCase();
-  var rowIndex = findAppointmentRow(bookingId);
-  if (rowIndex < 0) return fail("ไม่พบคำขอนัดหมาย: " + bookingId);
+  var rowIndex = findAppointmentRow(bookingId, sheetName);
+  if (rowIndex < 0) return fail("ไม่พบรายการ: " + bookingId);
 
-  var sheet = SPREADSHEET().getSheetByName("appointments");
+  var sheet = SPREADSHEET().getSheetByName(sheetName);
   var headers = sheet.getRange(1, 1, 1, APPT_HEADERS.length).getValues()[0];
   var current = readRow(sheet, rowIndex);
 
@@ -316,12 +377,28 @@ function adminNote(p) {
 
 /* ===================== Service Management (Admin) ===================== */
 
-function adminSaveService(p) {
-  var name = String(p.name || "").trim();
-  if (!name) return fail("กรุณากรอกชื่อบริการ");
+function adminSaveService(p) { return saveCatalogItem(p, "services", "lash"); }
+function adminToggleService(p) { return toggleCatalogItem(p, "services"); }
+function adminDeleteService(p) { return deleteCatalogItem(p, "services"); }
 
-  var sheet = getOrCreateSheet("services", SERVICE_HEADERS);
-  var category = String(p.category || "lash");
+// สินค้า: ชีท products, category บังคับเป็น "product", ไม่มี duration/options
+function adminSaveProduct(p) {
+  p.category = "product";
+  p.duration = "";
+  p.options = "";
+  return saveCatalogItem(p, "products", "product");
+}
+function adminToggleProduct(p) { return toggleCatalogItem(p, "products"); }
+function adminDeleteProduct(p) { return deleteCatalogItem(p, "products"); }
+
+// ----- generic catalog CRUD (ใช้ร่วมทั้ง services และ products) -----
+function saveCatalogItem(p, sheetName, defaultCat) {
+  var itemLabel = sheetName === "products" ? "สินค้า" : "บริการ";
+  var name = String(p.name || "").trim();
+  if (!name) return fail("กรุณากรอกชื่อ" + itemLabel);
+
+  var sheet = getOrCreateSheet(sheetName, SERVICE_HEADERS);
+  var category = String(p.category || defaultCat);
   var duration = String(p.duration || "");
   var price = Number(p.price) || 0;
   var description = String(p.description || "");
@@ -329,7 +406,7 @@ function adminSaveService(p) {
   var image = String(p.image || "").trim();
 
   if (p.id) {
-    var found = findServiceRow(String(p.id));
+    var found = findCatalogRow(sheetName, String(p.id));
     if (found >= 0) {
       var headers = sheet.getRange(1, 1, 1, SERVICE_HEADERS.length).getValues()[0];
       var row = readRow(sheet, found);
@@ -341,39 +418,39 @@ function adminSaveService(p) {
       row[headers.indexOf("options")] = options;
       row[headers.indexOf("image")] = image;
       sheet.getRange(found, 1, 1, SERVICE_HEADERS.length).setValues([row]);
-      return ok({ message: "แก้ไขบริการแล้ว" });
+      return ok({ message: "แก้ไข" + itemLabel + "แล้ว" });
     }
   }
 
   var nextId = nextServiceId(sheet);
   var newRow = [nextId, category, name, description, duration, price, options, image, "active", new Date().toISOString()];
-  appendRow("services", newRow);
+  appendRow(sheetName, newRow);
 
-  return ok({ message: "เพิ่มบริการแล้ว", id: nextId });
+  return ok({ message: "เพิ่ม" + itemLabel + "แล้ว", id: nextId });
 }
 
-function adminToggleService(p) {
-  var rowIndex = findServiceRow(String(p.id || ""));
-  if (rowIndex < 0) return fail("ไม่พบบริการ");
+function toggleCatalogItem(p, sheetName) {
+  var rowIndex = findCatalogRow(sheetName, String(p.id || ""));
+  if (rowIndex < 0) return fail("ไม่พบรายการ");
 
-  var sheet = getOrCreateSheet("services", SERVICE_HEADERS);
+  var sheet = getOrCreateSheet(sheetName, SERVICE_HEADERS);
   var headers = sheet.getRange(1, 1, 1, SERVICE_HEADERS.length).getValues()[0];
   var row = readRow(sheet, rowIndex);
   var current = row[headers.indexOf("status")] === "active" ? "inactive" : "active";
   row[headers.indexOf("status")] = current;
   sheet.getRange(rowIndex, 1, 1, SERVICE_HEADERS.length).setValues([row]);
 
-  return ok({ message: "อัปเดตสถานะบริการแล้ว" });
+  return ok({ message: "อัปเดตสถานะแล้ว" });
 }
 
-function adminDeleteService(p) {
-  var rowIndex = findServiceRow(String(p.id || ""));
-  if (rowIndex < 0) return fail("ไม่พบบริการ");
+function deleteCatalogItem(p, sheetName) {
+  var rowIndex = findCatalogRow(sheetName, String(p.id || ""));
+  if (rowIndex < 0) return fail("ไม่พบรายการ");
 
-  var sheet = getOrCreateSheet("services", SERVICE_HEADERS);
+  var sheet = getOrCreateSheet(sheetName, SERVICE_HEADERS);
   sheet.deleteRow(rowIndex);
 
-  return ok({ message: "ลบบริการแล้ว" });
+  return ok({ message: "ลบแล้ว" });
 }
 
 function uploadImage(p) {
@@ -443,32 +520,37 @@ function getOrCreateSheet(name, headers) {
 }
 
 function readSheet(name) {
-  var sheet = getOrCreateSheet(name, name === "services" ? SERVICE_HEADERS : APPT_HEADERS);
+  var sheet = getOrCreateSheet(name, headersFor(name));
   var lastRow = sheet.getLastRow();
   if (lastRow < 1) return [];
   return sheet.getRange(1, 1, lastRow, sheet.getLastColumn()).getValues();
 }
 
 function appendRow(name, values) {
-  var sheet = getOrCreateSheet(name, name === "services" ? SERVICE_HEADERS : APPT_HEADERS);
+  var sheet = getOrCreateSheet(name, headersFor(name));
   sheet.appendRow(values);
 }
 
 function readRow(sheet, rowIndex) {
-  var cols = sheet.getName() === "services" ? SERVICE_HEADERS.length : APPT_HEADERS.length;
+  var cols = headersFor(sheet.getName()).length || SERVICE_HEADERS.length;
   return sheet.getRange(rowIndex, 1, 1, cols).getValues()[0];
 }
 
-function findAppointmentRow(bookingId) {
-  var rows = readSheet("appointments");
+function findAppointmentRow(bookingId, sheetName) {
+  var rows = readSheet(sheetName || "appointments");
   for (var i = 1; i < rows.length; i++) {
     if (rows[i][0] && String(rows[i][0]).toUpperCase() === bookingId) return i + 1;
   }
   return -1;
 }
 
-function findServiceRow(id) {
-  var rows = readSheet("services");
+// ชื่อชีทของคำขอ: ออเดอร์สินค้า = "orders", นัดหมาย = "appointments"
+function collectionOf(p) {
+  return String(p.collection || "") === "orders" ? "orders" : "appointments";
+}
+
+function findCatalogRow(sheetName, id) {
+  var rows = readSheet(sheetName);
   for (var i = 1; i < rows.length; i++) {
     if (rows[i][0] !== undefined && String(rows[i][0]) === String(id)) return i + 1;
   }
@@ -497,7 +579,9 @@ function authDrive() {
 
 function setup() {
   getOrCreateSheet("appointments", APPT_HEADERS);
+  getOrCreateSheet("orders", ORDER_HEADERS);
   getOrCreateSheet("services", SERVICE_HEADERS);
-  getOrCreateSheet("messages", ["created_at", "name", "phone", "line_id", "topic", "message"]);
+  getOrCreateSheet("products", PRODUCT_HEADERS);
+  getOrCreateSheet("messages", MESSAGE_HEADERS);
   Logger.log("Setup complete: สร้างชีตเรียบร้อยแล้ว");
 }

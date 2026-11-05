@@ -821,3 +821,28 @@ table.admin-table { width: 100%; border-collapse: collapse; min-width: 900px; fo
   transition: background 0.2s;
 }
 .option-row .btn-remove-option:hover { background: #fde8e8; }
+
+/* ---------- Payment QR box (หน้าสั่งซื้อสินค้า) ---------- */
+.pay-box {
+  display: flex;
+  gap: 22px;
+  align-items: center;
+  flex-wrap: wrap;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 20px;
+  background: var(--cream);
+}
+.pay-box #payQR {
+  width: 180px;
+  height: 180px;
+  object-fit: contain;
+  background: #fff;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  flex-shrink: 0;
+}
+.pay-info { flex: 1; min-width: 200px; }
+.pay-name { font-family: var(--font-head); font-size: 18px; font-weight: 700; color: var(--dark); }
+.pay-amount { margin-top: 6px; color: var(--muted); font-size: 15px; }
+.pay-amount strong { font-family: var(--font-head); font-size: 20px; color: var(--gold); }
