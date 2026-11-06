@@ -426,9 +426,14 @@ h1, h2, h3, h4 {
 .catalog-card { overflow: hidden; padding: 0; display: flex; flex-direction: column; }
 .catalog-card-img {
   width: 100%;
-  height: 160px;
+  height: 280px;
   overflow: hidden;
   flex-shrink: 0;
+  position: relative;
+  display: grid;
+  place-items: center;
+  font-size: 64px;
+  color: #fff;
   background: linear-gradient(160deg, #8AB8CC, #3E6B7A);
 }
 
@@ -436,10 +441,24 @@ h1, h2, h3, h4 {
   display: block;
   width: 100%;
   height: 100%;
-  object-fit: contain;
+  object-fit: cover;          /* รูปเต็มกรอบพอดี ไม่เหลือพื้นหลัง */
   object-position: center;
+  transition: transform 0.5s ease;
 }
+.catalog-card:hover .catalog-card-img img { transform: scale(1.06); }
 .catalog-card-img--gold { background: linear-gradient(160deg, #C4D4DE, #6B9AAE); }
+
+/* มีรูปจริง → พื้นหลังขาว (รูป PNG พื้นใสจะไม่เห็นเฉดสีทะลุ ดูเต็มสะอาด) */
+.catalog-card-img:has(img) { background: #fff; }
+
+/* ไล่เฉดบางๆ ด้านล่างรูป ให้ป้ายหมวด/ตัวอักษรอ่านง่ายและดูมีมิติ */
+.catalog-card-img::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent 60%, rgba(46, 61, 74, 0.18));
+  pointer-events: none;
+}
 .catalog-card-body {
   padding: 20px 24px 28px;
   background: #fff;
