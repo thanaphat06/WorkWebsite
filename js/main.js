@@ -3,9 +3,14 @@
 function $(sel, root) { return (root || document).querySelector(sel); }
 function $all(sel, root) { return Array.from((root || document).querySelectorAll(sel)); }
 
+function curLang() {
+  return (window.i18n && window.i18n.getLang) ? window.i18n.getLang() : "th";
+}
+
 function fmtMoney(n) {
   const num = Number(n) || 0;
-  return num.toLocaleString("th-TH") + " บาท";
+  const unit = (window.t ? t("money.baht") : "บาท");
+  return num.toLocaleString("th-TH") + " " + unit;
 }
 
 function esc(str) {
@@ -34,9 +39,13 @@ function formatDateThai(iso) {
   if (!iso) return "-";
   const parts = iso.split("-");
   if (parts.length !== 3) return iso;
+  const d = Number(parts[2]), m = Number(parts[1]) - 1, y = Number(parts[0]);
+  if (curLang() === "en") {
+    const enMonths = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    return `${d} ${enMonths[m]} ${y}`;
+  }
   const thaiMonths = ["ม.ค.", "ก.พ.", "มี.ค.", "เม.ย.", "พ.ค.", "มิ.ย.", "ก.ค.", "ส.ค.", "ก.ย.", "ต.ค.", "พ.ย.", "ธ.ค."];
-  const month = thaiMonths[Number(parts[1]) - 1];
-  return `${Number(parts[2])} ${month} ${Number(parts[0]) + 543}`;
+  return `${d} ${thaiMonths[m]} ${y + 543}`;
 }
 
 /* ---------- API helper ---------- */
@@ -106,8 +115,11 @@ function initNav() {
 
 /* ---------- ปีใน footer ---------- */
 function initYear() {
-  $all(".year").forEach(el => { el.textContent = new Date().getFullYear() + 543; });
+  const g = new Date().getFullYear();
+  const y = curLang() === "en" ? g : g + 543; // อังกฤษ = ค.ศ., ไทย = พ.ศ.
+  $all(".year").forEach(el => { el.textContent = y; });
 }
+window.initYear = initYear;
 
 document.addEventListener("DOMContentLoaded", () => {
   initNav();

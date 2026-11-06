@@ -22,7 +22,7 @@ async function loadServices() {
     const data = await apiCall("getServices");
     state.services = data.services || [];
   } catch (e) {
-    list.innerHTML = '<div class="empty-state"><span class="icon">⚠️</span>โหลดรายการบริการไม่สำเร็จ กรุณาลองใหม่อีกครั้ง</div>';
+    list.innerHTML = `<div class="empty-state"><span class="icon">⚠️</span>${esc(t("booking.loadFail"))}</div>`;
     return;
   }
 
@@ -38,12 +38,12 @@ async function loadServices() {
 function renderServices() {
   const list = document.getElementById("serviceList");
   if (!state.services.length) {
-    list.innerHTML = '<div class="empty-state"><span class="icon">🍃</span>ยังไม่มีบริการให้เลือกในขณะนี้</div>';
+    list.innerHTML = `<div class="empty-state"><span class="icon">🍃</span>${esc(t("booking.empty"))}</div>`;
     return;
   }
   list.innerHTML = state.services.map(s => {
     const id = String(s.id);
-    const catLabel = s.category === "lash" ? "ต่อขนตา" : s.category === "product" ? "สินค้า" : "นวด";
+    const catLabel = s.category === "lash" ? t("cat.lash") : s.category === "product" ? t("cat.product") : t("cat.massage");
     const selected = state.selectedServices.has(id) ? "selected" : "";
     return `
     <div class="service-pick ${selected}" data-id="${id}">
@@ -114,33 +114,33 @@ function goToStep(n) {
 function validateStep(n) {
   if (n === 1) {
     if (state.selectedServices.size === 0) {
-      toast("กรุณาเลือกบริการอย่างน้อย 1 รายการ", { gold: true });
+      toast(t("v.pickService"), { gold: true });
       return false;
     }
   }
   if (n === 2) {
     const name = $("#bName").value.trim();
     const phone = $("#bPhone").value.trim();
-    if (!name) { toast("กรุณากรอกชื่อ-นามสกุล", { gold: true }); return false; }
+    if (!name) { toast(t("v.name"), { gold: true }); return false; }
     if (!/^0\d{8,9}$/.test(phone)) {
-      toast("กรุณากรอกเบอร์โทรศัพท์ 10 หลัก (ขึ้นต้นด้วย 0)", { gold: true });
+      toast(t("v.phone"), { gold: true });
       return false;
     }
     state.customer = { name, phone, line: $("#bLine").value.trim() };
   }
   if (n === 3) {
     const date = $("#bDate").value;
-    if (!date) { toast("กรุณาเลือกวันที่", { gold: true }); return false; }
-    if (date < todayISO()) { toast("กรุณาเลือกวันที่ไม่เป็นอดีต", { gold: true }); return false; }
-    if (!state.time) { toast("กรุณาเลือกช่วงเวลาที่สะดวก", { gold: true }); return false; }
+    if (!date) { toast(t("v.pickDate"), { gold: true }); return false; }
+    if (date < todayISO()) { toast(t("v.pastDate"), { gold: true }); return false; }
+    if (!state.time) { toast(t("v.pickTime"), { gold: true }); return false; }
     state.date = date;
   }
   if (n === 4) {
     if (state.locationType === "home") {
       const type = $("#bLocType").value;
       const addr = $("#bAddress").value.trim();
-      if (!type) { toast("กรุณาเลือกประเภทสถานที่", { gold: true }); return false; }
-      if (!addr) { toast("กรุณากรอกที่อยู่ / เลขห้อง", { gold: true }); return false; }
+      if (!type) { toast(t("v.pickLocType"), { gold: true }); return false; }
+      if (!addr) { toast(t("v.addr"), { gold: true }); return false; }
       state.people = Number($("#bPeople").value) || 1;
       state.address = addr;
       state.locDetail = $("#bLocDetail").value.trim();
@@ -149,7 +149,7 @@ function validateStep(n) {
       state.address = "";
       state.locDetail = "";
     } else {
-      toast("กรุณาเลือกสถานที่ให้บริการ", { gold: true });
+      toast(t("v.pickLoc"), { gold: true });
       return false;
     }
   }
@@ -163,24 +163,24 @@ function renderReview() {
   const total = svc.reduce((sum, s) => sum + (Number(s.price) || 0), 0);
 
   const locText = state.locationType === "home"
-    ? "ให้ร้านไปหาฉัน"
-    : "ไปใช้บริการที่สถานที่นัดหมาย";
+    ? t("rv.locHome")
+    : t("rv.locPlace");
 
   const rows = [
-    ["บริการ", svc.map(s => s.name).join(", ") || "-"],
-    ["วันที่", formatDateThai(state.date)],
-    ["ช่วงเวลาที่สะดวก", state.time],
-    ["สถานที่", locText],
+    [t("rv.service"), svc.map(s => s.name).join(", ") || "-"],
+    [t("rv.date"), formatDateThai(state.date)],
+    [t("rv.time"), state.time],
+    [t("rv.location"), locText],
     ...(state.locationType === "home" ? [
-      ["ประเภทสถานที่", state.locationType === "home" ? $("#bLocType").value : ""],
-      ["ที่อยู่", state.address || "-"],
-      ["รายละเอียด", state.locDetail || "-"],
+      [t("rv.locType"), state.locationType === "home" ? $("#bLocType").value : ""],
+      [t("rv.address"), state.address || "-"],
+      [t("rv.detail"), state.locDetail || "-"],
     ] : []),
-    ["จำนวนผู้ใช้บริการ", state.people + " คน"],
-    ["ชื่อ", state.customer.name],
-    ["เบอร์โทร", state.customer.phone],
-    ["LINE ID", state.customer.line || "-"],
-    ["ราคาโดยประมาณ", fmtMoney(total)],
+    [t("rv.people"), state.people + " " + t("unit.people")],
+    [t("rv.name"), state.customer.name],
+    [t("rv.phone"), state.customer.phone],
+    [t("rv.line"), state.customer.line || "-"],
+    [t("rv.estTotal"), fmtMoney(total)],
   ];
 
   list.innerHTML = rows.map(([k, v]) =>
@@ -194,14 +194,14 @@ function updateSummary() {
   const total = svc.reduce((sum, s) => sum + (Number(s.price) || 0), 0);
 
   const sSvc = document.getElementById("sideServices");
-  sSvc.innerHTML = `<span class="ss-label">บริการ</span><span style="text-align:right; max-width:180px;">${
-    svc.length ? svc.map(s => s.name).join(", ") : "—"
+  sSvc.innerHTML = `<span class="ss-label">${esc(t("booking.sumService"))}</span><span style="text-align:right; max-width:180px;">${
+    svc.length ? esc(svc.map(s => s.name).join(", ")) : "—"
   }</span>`;
   $("#sideDate").textContent = state.date ? formatDateThai(state.date) : "—";
   $("#sideTime").textContent = state.time || "—";
   $("#sideLoc").textContent = state.locationType === "home"
-    ? "ให้ร้านไปหาฉัน"
-    : state.locationType === "place" ? "สถานที่นัดหมาย" : "—";
+    ? t("side.locHome")
+    : state.locationType === "place" ? t("side.locPlace") : "—";
   $("#sideTotal").textContent = svc.length ? fmtMoney(total) : "—";
 }
 
@@ -209,7 +209,7 @@ function updateSummary() {
 async function submitRequest() {
   const btn = document.getElementById("btnSubmit");
   btn.disabled = true;
-  btn.textContent = "กำลังส่ง...";
+  btn.textContent = t("v.sending");
 
   const svc = state.services.filter(s => state.selectedServices.has(String(s.id)));
   const total = svc.reduce((sum, s) => sum + (Number(s.price) || 0), 0);
@@ -238,7 +238,7 @@ async function submitRequest() {
   } catch (e) {
     toast(e.message, { gold: true });
     btn.disabled = false;
-    btn.textContent = "ส่งคำขอนัดหมาย";
+    btn.textContent = t("booking.submit");
   }
 }
 
@@ -278,4 +278,12 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   document.getElementById("btnSubmit").addEventListener("click", submitRequest);
+
+  // สลับภาษา: render ส่วนที่ JS สร้างใหม่
+  window.onLangChange = () => {
+    renderServices();
+    renderTimeSlots();
+    updateSummary();
+    if (currentStep === 5) renderReview();
+  };
 });

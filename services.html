@@ -19,40 +19,43 @@
     <a href="index.html" class="logo"><img src="assets/img/logo.png" alt="" class="logo-img" width="28" height="28"><span>THD. BEAUTY STUDIO</span></a>
     <nav>
       <ul class="nav-links" id="navLinks">
-        <li><a href="index.html">Home</a></li>
-        <li><a href="services.html" class="active">Services</a></li>
-        <li><a href="about.html">About</a></li>
-        <li><a href="contact.html">Contact</a></li>
-        <li><a href="booking.html" class="btn btn-primary">จองบริการ</a></li>
+        <li><a href="index.html" data-i18n="nav.home">Home</a></li>
+        <li><a href="services.html" class="active" data-i18n="nav.menu">Our Menu</a></li>
+        <li><a href="about.html" data-i18n="nav.about">About</a></li>
+        <li><a href="contact.html" data-i18n="nav.contact">Contact</a></li>
+        <li><a href="booking.html" class="btn btn-primary" data-i18n="nav.book">จองบริการ</a></li>
       </ul>
     </nav>
-    <button class="nav-toggle" id="navToggle" aria-label="เมนู">☰</button>
+    <div class="nav-ctrls">
+      <button class="lang-switch" id="langToggle" aria-label="Switch language / สลับภาษา"><span class="ls-th">ไทย</span><span class="ls-en">EN</span></button>
+      <button class="nav-toggle" id="navToggle" aria-label="เมนู">☰</button>
+    </div>
   </div>
 </header>
 
 <section class="page-head">
   <div class="container">
-    <span class="eyebrow">Our Services</span>
-    <h1>บริการของเรา</h1>
-    <p>ต่อขนตาและนวดผ่อนคลาย แบบนัดหมายถึงที่ ทางร้านจะโทรกลับเพื่อยืนยันรายละเอียดอีกครั้ง</p>
+    <span class="eyebrow">Our Menu</span>
+    <h1 data-i18n="services.title">บริการของเรา</h1>
+    <p data-i18n="services.sub">ต่อขนตาและนวดผ่อนคลาย แบบนัดหมายถึงที่ ทางร้านจะโทรกลับเพื่อยืนยันรายละเอียดอีกครั้ง</p>
   </div>
 </section>
 
 <section class="section">
   <div class="container">
     <div class="tabs" id="tabs">
-      <button class="tab active" data-filter="all">ทั้งหมด</button>
-      <button class="tab" data-filter="lash">ต่อขนตา</button>
-      <button class="tab" data-filter="massage">ทรีดเม้นหน้า</button>
-      <button class="tab" data-filter="product">สินค้า</button>
+      <button class="tab active" data-filter="all" data-i18n="services.tabAll">ทั้งหมด</button>
+      <button class="tab" data-filter="lash" data-i18n="services.tabLash">ต่อขนตา</button>
+      <button class="tab" data-filter="massage" data-i18n="services.tabMassage">ทรีดเม้นหน้า</button>
+      <button class="tab" data-filter="product" data-i18n="services.tabProduct">สินค้า</button>
     </div>
 
     <div id="servicesGrid" class="catalog-grid">
-      <div class="loader"><div class="spinner"></div>กำลังโหลดรายการบริการ...</div>
+      <div class="loader"><div class="spinner"></div><span data-i18n="services.loading">กำลังโหลดรายการบริการ...</span></div>
     </div>
 
     <div style="text-align:center; margin-top:44px;">
-      <a href="booking.html" class="btn btn-primary btn-lg">จองบริการเลย</a>
+      <a href="booking.html" class="btn btn-primary btn-lg" data-i18n="services.bookCta">จองบริการเลย</a>
     </div>
   </div>
 </section>
@@ -61,41 +64,42 @@
   <div class="container footer-grid">
     <div>
       <a href="index.html" class="logo"><img src="assets/img/logo.png" alt="" class="logo-img" width="28" height="28"><span>THD. BEAUTY STUDIO</span></a>
-      <p style="margin-top:14px; font-size:14.5px;">บริการต่อขนตาและนวดแบบนัดหมายถึงที่ เพื่อความสวยและการผ่อนคลายในแบบของคุณ</p>
+      <p style="margin-top:14px; font-size:14.5px;" data-i18n="footer.tagline">บริการต่อขนตาและนวดแบบนัดหมายถึงที่ เพื่อความสวยและการผ่อนคลายในแบบของคุณ</p>
     </div>
     <div>
-      <h4>เมนู</h4>
+      <h4 data-i18n="footer.menu">เมนู</h4>
       <ul>
-        <li><a href="index.html">Home</a></li>
-        <li><a href="services.html">Services</a></li>
-        <li><a href="about.html">About</a></li>
-        <li><a href="contact.html">Contact</a></li>
+        <li><a href="index.html" data-i18n="nav.home">Home</a></li>
+        <li><a href="services.html" data-i18n="nav.menu">Our Menu</a></li>
+        <li><a href="about.html" data-i18n="nav.about">About</a></li>
+        <li><a href="contact.html" data-i18n="nav.contact">Contact</a></li>
       </ul>
     </div>
     <div>
-      <h4>บริการ</h4>
+      <h4 data-i18n="footer.servicesHead">บริการ</h4>
       <ul>
-        <li><a href="services.html">ต่อขนตา</a></li>
-        <li><a href="services.html">นวดผ่อนคลาย</a></li>
-        <li><a href="status.html">ตรวจสอบสถานะ</a></li>
+        <li><a href="services.html" data-i18n="footer.lash">ต่อขนตา</a></li>
+        <li><a href="services.html" data-i18n="footer.massage">นวดผ่อนคลาย</a></li>
+        <li><a href="status.html" data-i18n="footer.checkStatus">ตรวจสอบสถานะ</a></li>
       </ul>
     </div>
     <div>
-      <h4>ติดต่อ</h4>
+      <h4 data-i18n="footer.contactHead">ติดต่อ</h4>
       <ul>
         <li>โทร: <a href="tel:0986545684">0986545684</a></li>
-        <li>LINE: ยังไม่มีช่องทางนี้</li>
+        <li data-i18n="footer.lineNA">LINE: ยังไม่มีช่องทางนี้</li>
         <li>Facebook: <a href="https://www.facebook.com/people/THD-Beauty-Studio/61593494246633/" target="_blank" rel="noopener">THD Beauty Studio</a></li>
-        <li>เวลาทำการ: นัดหมายล่วงหน้า</li>
+        <li data-i18n="footer.hours">เวลาทำการ: นัดหมายล่วงหน้า</li>
       </ul>
     </div>
   </div>
   <div class="footer-bottom">
-    <div class="container">© <span class="year"></span> THD. BEAUTY STUDIO — ต่อขนตา &amp; นวด นัดหมายถึงที่</div>
+    <div class="container">© <span class="year"></span> <span data-i18n="footer.copy">THD. BEAUTY STUDIO — ต่อขนตา &amp; นวด นัดหมายถึงที่</span></div>
   </div>
-</footer> 
+</footer>
 
 <script src="js/config.js"></script>
+<script src="js/i18n.js"></script>
 <script src="js/main.js"></script>
 <script>
 let services = [];
@@ -103,12 +107,13 @@ let currentFilter = "all"
 
 function renderServices() {
   const grid = document.getElementById("servicesGrid");
-  const filtered = currentFilter === "all"
-    ? services
-    : services.filter(s => s.category === currentFilter);
+  const filtered = (currentFilter === "all"
+    ? services.slice()
+    : services.filter(s => s.category === currentFilter))
+    .sort((a, b) => (Number(b.price) || 0) - (Number(a.price) || 0)); // แพง → ถูก
 
   if (!filtered.length) {
-    grid.innerHTML = '<div class="empty-state"><span class="icon">🍃</span>ยังไม่มีบริการในหมวดนี้</div>';
+    grid.innerHTML = `<div class="empty-state"><span class="icon">🍃</span>${esc(t("card.emptyCat"))}</div>`;
     return;
   }
 
@@ -116,21 +121,21 @@ function renderServices() {
     const icon = window.AppConfig.serviceIcons[s.category] || window.AppConfig.serviceIcons.default;
     const gold = s.category === "massage";
     const isProduct = s.category === "product";
-    const catLabel = s.category === "lash" ? "ต่อขนตา" : isProduct ? "สินค้า" : "ทรีดเม้นหน้า";
+    const catLabel = s.category === "lash" ? t("cat.lash") : isProduct ? t("cat.product") : t("cat.massage");
     return `
     <div class="card catalog-card">
       <div class="catalog-card-img ${gold ? "catalog-card-img--gold" : ""}">
         ${s.image ? `<img src="${esc(s.image)}" alt="${esc(s.name)}" loading="lazy">` : icon}
       </div>
       <div class="catalog-card-body">
-        <span class="cat">${catLabel}</span>
+        <span class="cat">${esc(catLabel)}</span>
         <h3>${esc(s.name)}</h3>
         <p>${esc(s.description)}</p>
         <div class="catalog-meta">
           ${s.duration ? `<span class="duration"><span class="icon">🕐</span>${esc(s.duration)}</span>` : `<span class="duration"></span>`}
           <span class="price-tag">${fmtMoney(s.price)}</span>
         </div>
-        <a href="${isProduct ? "order" : "booking"}.html?service=${encodeURIComponent(s.id)}" class="btn btn-primary btn-block">${isProduct ? "สั่งซื้อสินค้า" : "จองบริการ"}</a>
+        <a href="${isProduct ? "order" : "booking"}.html?service=${encodeURIComponent(s.id)}" class="btn btn-primary btn-block">${esc(isProduct ? t("card.buy") : t("card.book"))}</a>
       </div>
     </div>`;
   }).join("");
@@ -147,7 +152,7 @@ async function loadServices() {
     const products = (prodData.products || []).map(p => ({ ...p, category: "product" }));
     services = (svcData.services || []).concat(products);
   } catch (e) {
-    grid.innerHTML = '<div class="empty-state"><span class="icon">⚠️</span>โหลดรายการไม่สำเร็จ กรุณาลองใหม่อีกครั้ง</div>';
+    grid.innerHTML = `<div class="empty-state"><span class="icon">⚠️</span>${esc(t("card.loadFail"))}</div>`;
     return;
   }
   renderServices();
@@ -161,6 +166,9 @@ document.getElementById("tabs").addEventListener("click", (e) => {
   currentFilter = tab.dataset.filter;
   renderServices();
 });
+
+// สลับภาษาแล้ว render การ์ดใหม่ (ป้ายหมวด/ปุ่ม)
+window.onLangChange = renderServices;
 
 loadServices();
 </script>

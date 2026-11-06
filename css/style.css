@@ -194,6 +194,47 @@ h1, h2, h3, h4 {
   color: var(--dark);
 }
 
+/* เลย์เอาต์ header: โลโก้ซ้าย | เมนูกลาง | ปุ่มขวา
+   (ให้ซ้าย/ขวามี flex:1 เท่ากัน เมนูตรงกลางจึงอยู่กึ่งกลางจริง) */
+.nav > .logo { flex: 1; }
+.nav > nav { flex: 0 0 auto; }
+
+/* กลุ่มปุ่มขวาสุด (สวิตช์ภาษา + เมนูมือถือ) */
+.nav-ctrls {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+/* สวิตช์สลับภาษา ไทย | EN */
+.lang-switch {
+  display: inline-flex;
+  align-items: center;
+  border: 1.5px solid var(--border);
+  border-radius: 40px;
+  background: var(--white);
+  overflow: hidden;
+  padding: 0;
+  font-family: var(--font-body);
+  font-size: 12.5px;
+  font-weight: 700;
+  line-height: 1;
+  transition: var(--transition);
+}
+.lang-switch:hover { border-color: var(--sage); }
+.lang-switch span {
+  padding: 6px 12px;
+  color: var(--muted);
+  transition: var(--transition);
+}
+.lang-switch[data-lang="th"] .ls-th,
+.lang-switch[data-lang="en"] .ls-en {
+  background: var(--sage);
+  color: #fff;
+}
+
 /* ---------- Hero ---------- */
 .hero {
   position: relative;
@@ -789,6 +830,39 @@ table.admin-table { width: 100%; border-collapse: collapse; min-width: 900px; fo
   .admin-topbar .logo span { display: none; }
 }
 
+
+/* ---------- จอมือถือเล็ก ---------- */
+@media (max-width: 480px) {
+  .container { width: 94%; }
+  .section { padding: 48px 0; }
+
+  /* การ์ดเป็นคอลัมน์เดียว กัน minmax(300px) ล้นจอแคบ */
+  .catalog-grid,
+  .service-cards,
+  .features-grid,
+  .steps { grid-template-columns: 1fr; }
+
+  /* ปุ่มนำทางฟอร์ม/hero ขึ้นบรรทัดเองได้ ไม่ล้น */
+  .form-nav { flex-wrap: wrap; }
+  .form-nav .btn { flex: 1 1 140px; }
+  .hero-actions { width: 100%; }
+  .hero-actions .btn { flex: 1 1 100%; }
+
+  .btn { padding: 14px 24px; }
+  .btn-lg { padding: 15px 28px; font-size: 16px; }
+
+  .page-head { padding: 40px 0; }
+  .booking-card { padding: 22px 16px; }
+  .modal-card { padding: 26px 18px; }
+
+  /* กล่อง QR ชำระเงิน: QR เต็มกว้าง จัดกลาง */
+  .pay-box { flex-direction: column; text-align: center; }
+  .pay-box #payQR { width: 200px; height: 200px; margin: 0 auto; }
+  .pay-info { min-width: 0; }
+
+  /* ตารางแอดมิน: ตัวอักษรเล็กลงนิด อ่านบนมือถือง่ายขึ้นตอนเลื่อนแนวนอน */
+  table.admin-table { font-size: 13px; }
+}
 
 @media (prefers-reduced-motion: reduce) {
   * { animation: none !important; transition: none !important; }
