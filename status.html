@@ -19,22 +19,25 @@
     <a href="index.html" class="logo"><img src="assets/img/logo.png" alt="" class="logo-img" width="28" height="28"><span>THD. BEAUTY STUDIO</span></a>
     <nav>
       <ul class="nav-links" id="navLinks">
-        <li><a href="index.html">Home</a></li>
-        <li><a href="services.html">Services</a></li>
-        <li><a href="about.html">About</a></li>
-        <li><a href="contact.html">Contact</a></li>
-        <li><a href="booking.html" class="btn btn-primary">จองบริการ</a></li>
+        <li><a href="index.html" data-i18n="nav.home">Home</a></li>
+        <li><a href="services.html" data-i18n="nav.menu">Our Menu</a></li>
+        <li><a href="about.html" data-i18n="nav.about">About</a></li>
+        <li><a href="contact.html" data-i18n="nav.contact">Contact</a></li>
+        <li><a href="booking.html" class="btn btn-primary" data-i18n="nav.book">จองบริการ</a></li>
       </ul>
     </nav>
-    <button class="nav-toggle" id="navToggle" aria-label="เมนู">☰</button>
+    <div class="nav-ctrls">
+      <button class="lang-switch" id="langToggle" aria-label="Switch language / สลับภาษา"><span class="ls-th">ไทย</span><span class="ls-en">EN</span></button>
+      <button class="nav-toggle" id="navToggle" aria-label="เมนู">☰</button>
+    </div>
   </div>
 </header>
 
 <section class="page-head">
   <div class="container">
     <span class="eyebrow">Booking Status</span>
-    <h1>ตรวจสอบสถานะ</h1>
-    <p>กรอกเบอร์โทรศัพท์และรหัสอ้างอิงที่ได้รับหลังส่งคำขอนัดหมาย</p>
+    <h1 data-i18n="status.title">ตรวจสอบสถานะ</h1>
+    <p data-i18n="status.sub">กรอกเบอร์โทรศัพท์และรหัสอ้างอิงที่ได้รับหลังส่งคำขอนัดหมาย</p>
   </div>
 </section>
 
@@ -45,15 +48,15 @@
       <div class="card" style="padding:30px;">
         <div class="form-row">
           <div class="form-group">
-            <label for="sPhone">เบอร์โทรศัพท์ <span class="req">*</span></label>
-            <input type="tel" id="sPhone" placeholder="081-234-5678" maxlength="10" />
+            <label for="sPhone" data-i18n="status.phoneLabel">เบอร์โทรศัพท์</label>
+            <input type="tel" id="sPhone" placeholder="081-234-5678" data-i18n-placeholder="status.phonePh" maxlength="10" />
           </div>
           <div class="form-group">
-            <label for="sRef">รหัสอ้างอิง <span class="req">*</span></label>
-            <input type="text" id="sRef" placeholder="BK-20260911-1234" />
+            <label for="sRef" data-i18n="status.refLabel">รหัสอ้างอิง</label>
+            <input type="text" id="sRef" placeholder="BK-20260911-1234" data-i18n-placeholder="status.refPh" />
           </div>
         </div>
-        <button class="btn btn-primary btn-block" id="btnCheck">ตรวจสอบสถานะ</button>
+        <button class="btn btn-primary btn-block" id="btnCheck" data-i18n="status.checkBtn">ตรวจสอบสถานะ</button>
       </div>
     </div>
 
@@ -66,41 +69,42 @@
   <div class="container footer-grid">
     <div>
       <a href="index.html" class="logo"><img src="assets/img/logo.png" alt="" class="logo-img" width="28" height="28"><span>THD. BEAUTY STUDIO</span></a>
-      <p style="margin-top:14px; font-size:14.5px;">บริการต่อขนตาและนวดแบบนัดหมายถึงที่ เพื่อความสวยและการผ่อนคลายในแบบของคุณ</p>
+      <p style="margin-top:14px; font-size:14.5px;" data-i18n="footer.tagline">บริการต่อขนตาและนวดแบบนัดหมายถึงที่ เพื่อความสวยและการผ่อนคลายในแบบของคุณ</p>
     </div>
     <div>
-      <h4>เมนู</h4>
+      <h4 data-i18n="footer.menu">เมนู</h4>
       <ul>
-        <li><a href="index.html">Home</a></li>
-        <li><a href="services.html">Services</a></li>
-        <li><a href="about.html">About</a></li>
-        <li><a href="contact.html">Contact</a></li>
+        <li><a href="index.html" data-i18n="nav.home">Home</a></li>
+        <li><a href="services.html" data-i18n="nav.menu">Our Menu</a></li>
+        <li><a href="about.html" data-i18n="nav.about">About</a></li>
+        <li><a href="contact.html" data-i18n="nav.contact">Contact</a></li>
       </ul>
     </div>
     <div>
-      <h4>บริการ</h4>
+      <h4 data-i18n="footer.servicesHead">บริการ</h4>
       <ul>
-        <li><a href="services.html">ต่อขนตา</a></li>
-        <li><a href="services.html">นวดผ่อนคลาย</a></li>
-        <li><a href="status.html">ตรวจสอบสถานะ</a></li>
+        <li><a href="services.html" data-i18n="footer.lash">ต่อขนตา</a></li>
+        <li><a href="services.html" data-i18n="footer.massage">นวดผ่อนคลาย</a></li>
+        <li><a href="status.html" data-i18n="footer.checkStatus">ตรวจสอบสถานะ</a></li>
       </ul>
     </div>
     <div>
-      <h4>ติดต่อ</h4>
+      <h4 data-i18n="footer.contactHead">ติดต่อ</h4>
       <ul>
         <li>โทร: <a href="tel:0986545684">0986545684</a></li>
-        <li>LINE: ยังไม่มีช่องทางนี้</li>
+        <li data-i18n="footer.lineNA">LINE: ยังไม่มีช่องทางนี้</li>
         <li>Facebook: <a href="https://www.facebook.com/people/THD-Beauty-Studio/61593494246633/" target="_blank" rel="noopener">THD Beauty Studio</a></li>
-        <li>เวลาทำการ: นัดหมายล่วงหน้า</li>
+        <li data-i18n="footer.hours">เวลาทำการ: นัดหมายล่วงหน้า</li>
       </ul>
     </div>
   </div>
   <div class="footer-bottom">
-    <div class="container">© <span class="year"></span> THD. BEAUTY STUDIO — ต่อขนตา &amp; นวด นัดหมายถึงที่</div>
+    <div class="container">© <span class="year"></span> <span data-i18n="footer.copy">THD. BEAUTY STUDIO — ต่อขนตา &amp; นวด นัดหมายถึงที่</span></div>
   </div>
 </footer>
 
 <script src="js/config.js"></script>
+<script src="js/i18n.js"></script>
 <script src="js/main.js"></script>
 <script src="js/status.js"></script>
 </body>

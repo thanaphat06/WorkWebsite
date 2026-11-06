@@ -19,22 +19,25 @@
     <a href="index.html" class="logo"><img src="assets/img/logo.png" alt="" class="logo-img" width="28" height="28"><span>THD. BEAUTY STUDIO</span></a>
     <nav>
       <ul class="nav-links" id="navLinks">
-        <li><a href="index.html">Home</a></li>
-        <li><a href="services.html">Services</a></li>
-        <li><a href="about.html">About</a></li>
-        <li><a href="contact.html" class="active">Contact</a></li>
-        <li><a href="booking.html" class="btn btn-primary">จองบริการ</a></li>
+        <li><a href="index.html" data-i18n="nav.home">Home</a></li>
+        <li><a href="services.html" data-i18n="nav.menu">Our Menu</a></li>
+        <li><a href="about.html" data-i18n="nav.about">About</a></li>
+        <li><a href="contact.html" class="active" data-i18n="nav.contact">Contact</a></li>
+        <li><a href="booking.html" class="btn btn-primary" data-i18n="nav.book">จองบริการ</a></li>
       </ul>
     </nav>
-    <button class="nav-toggle" id="navToggle" aria-label="เมนู">☰</button>
+    <div class="nav-ctrls">
+      <button class="lang-switch" id="langToggle" aria-label="Switch language / สลับภาษา"><span class="ls-th">ไทย</span><span class="ls-en">EN</span></button>
+      <button class="nav-toggle" id="navToggle" aria-label="เมนู">☰</button>
+    </div>
   </div>
 </header>
 
 <section class="page-head">
   <div class="container">
     <span class="eyebrow">Contact Us</span>
-    <h1>ติดต่อเรา</h1>
-    <p>สอบถามข้อมูล หรือต้องการปรับเปลี่ยนการนัดหมาย ติดต่อเราได้เลย</p>
+    <h1 data-i18n="contact.title">ติดต่อเรา</h1>
+    <p data-i18n="contact.sub">สอบถามข้อมูล หรือต้องการปรับเปลี่ยนการนัดหมาย ติดต่อเราได้เลย</p>
   </div>
 </section>
 
@@ -45,74 +48,74 @@
       <div class="contact-info-item">
         <div class="icon">📞</div>
         <div>
-          <h4>โทรศัพท์</h4>
-          <p><a href="tel:0986545684">0986545684</a><br/>ทางร้านจะโทรกลับเพื่อยืนยันรายละเอียดการนัดหมาย</p>
+          <h4 data-i18n="contact.phoneHead">โทรศัพท์</h4>
+          <p><a href="tel:0986545684">0986545684</a><br/><span data-i18n="contact.phoneDesc">ทางร้านจะโทรกลับเพื่อยืนยันรายละเอียดการนัดหมาย</span></p>
         </div>
       </div>
       <div class="contact-info-item">
         <div class="icon">💬</div>
         <div>
-          <h4>LINE</h4>
-          <p>ยังไม่มีช่องทางนี้</p>
+          <h4 data-i18n="contact.lineHead">LINE</h4>
+          <p data-i18n="contact.lineDesc">ยังไม่มีช่องทางนี้</p>
         </div>
       </div>
       <div class="contact-info-item">
         <div class="icon">✉️</div>
         <div>
-          <h4>อีเมล</h4>
+          <h4 data-i18n="contact.emailHead">อีเมล</h4>
           <p><a href="mailto:azaz2000azlove@gmail.com">azaz2000azlove@gmail.com</a></p>
         </div>
       </div>
       <div class="contact-info-item">
         <div class="icon">📍</div>
         <div>
-          <h4>พื้นที่ให้บริการ</h4>
-          <p>บริการแบบนัดหมายถึงที่ — ให้ร้านเดินทางไปหาคุณ หรือใช้บริการที่สถานที่นัดหมาย</p>
+          <h4 data-i18n="contact.areaHead">พื้นที่ให้บริการ</h4>
+          <p data-i18n="contact.areaDesc">บริการแบบนัดหมายถึงที่ — ให้ร้านเดินทางไปหาคุณ หรือใช้บริการที่สถานที่นัดหมาย</p>
         </div>
       </div>
       <div class="contact-info-item">
         <div class="icon">🕐</div>
         <div>
-          <h4>เวลาทำการ</h4>
-          <p>นัดหมายล่วงหน้า<br/>10:00 – 20:00 (กรุณาจองล่วงหน้า)</p>
+          <h4 data-i18n="contact.hoursHead">เวลาทำการ</h4>
+          <p data-i18n="contact.hoursDesc">นัดหมายล่วงหน้า 10:00 – 20:00 (กรุณาจองล่วงหน้า)</p>
         </div>
       </div>
     </div>
 
     <div class="card contact-form-card">
-      <h3 style="font-size:22px; margin-bottom:8px;">ส่งข้อความถึงเรา</h3>
-      <p style="color:var(--muted); margin-bottom:24px;">เราจะติดต่อกลับโดยเร็วที่สุด</p>
+      <h3 style="font-size:22px; margin-bottom:8px;" data-i18n="contact.formTitle">ส่งข้อความถึงเรา</h3>
+      <p style="color:var(--muted); margin-bottom:24px;" data-i18n="contact.formDesc">เราจะติดต่อกลับโดยเร็วที่สุด</p>
 
-      <div class="alert alert-success" id="cSuccess">ส่งข้อความเรียบร้อยแล้ว เราจะติดต่อกลับโดยเร็วที่สุด</div>
+      <div class="alert alert-success" id="cSuccess" data-i18n="contact.successMsg">ส่งข้อความเรียบร้อยแล้ว เราจะติดต่อกลับโดยเร็วที่สุด</div>
       <div class="alert alert-error" id="cError"></div>
 
       <form id="contactForm" novalidate>
         <div class="form-row">
           <div class="form-group">
-            <label for="cName">ชื่อ <span class="req">*</span></label>
-            <input type="text" id="cName" placeholder="ชื่อของคุณ" />
+            <label for="cName" data-i18n="contact.name">ชื่อ</label>
+            <input type="text" id="cName" placeholder="ชื่อของคุณ" data-i18n-placeholder="contact.namePh" />
           </div>
           <div class="form-group">
-            <label for="cPhone">เบอร์โทร <span class="req">*</span></label>
-            <input type="tel" id="cPhone" placeholder="081-234-5678" maxlength="10" />
+            <label for="cPhone" data-i18n="contact.phone">เบอร์โทร</label>
+            <input type="tel" id="cPhone" placeholder="081-234-5678" data-i18n-placeholder="contact.phonePh" maxlength="10" />
           </div>
         </div>
         <div class="form-group">
-          <label for="cTopic">หัวข้อ</label>
+          <label for="cTopic" data-i18n="contact.topic">หัวข้อ</label>
           <select id="cTopic">
-            <option value="">— เลือกหัวข้อ —</option>
-            <option>สอบถามบริการ</option>
-            <option>สอบถามราคา</option>
-            <option>ปรับเปลี่ยนการนัดหมาย</option>
-            <option>ยกเลิกการนัดหมาย</option>
-            <option>อื่น ๆ</option>
+            <option value="" data-i18n="contact.topicPick">— เลือกหัวข้อ —</option>
+            <option data-i18n="contact.topicService">สอบถามบริการ</option>
+            <option data-i18n="contact.topicPrice">สอบถามราคา</option>
+            <option data-i18n="contact.topicReschedule">ปรับเปลี่ยนการนัดหมาย</option>
+            <option data-i18n="contact.topicCancel">ยกเลิกการนัดหมาย</option>
+            <option data-i18n="contact.topicOther">อื่น ๆ</option>
           </select>
         </div>
         <div class="form-group">
-          <label for="cMsg">ข้อความ <span class="req">*</span></label>
-          <textarea id="cMsg" placeholder="พิมพ์ข้อความของคุณ..."></textarea>
+          <label for="cMsg" data-i18n="contact.message">ข้อความ</label>
+          <textarea id="cMsg" placeholder="พิมพ์ข้อความของคุณ..." data-i18n-placeholder="contact.messagePh"></textarea>
         </div>
-        <button type="submit" class="btn btn-primary btn-block">ส่งข้อความ</button>
+        <button type="submit" class="btn btn-primary btn-block" data-i18n="contact.send">ส่งข้อความ</button>
       </form>
     </div>
 
@@ -123,41 +126,42 @@
   <div class="container footer-grid">
     <div>
       <a href="index.html" class="logo"><img src="assets/img/logo.png" alt="" class="logo-img" width="28" height="28"><span>THD. BEAUTY STUDIO</span></a>
-      <p style="margin-top:14px; font-size:14.5px;">บริการต่อขนตาและนวดแบบนัดหมายถึงที่ เพื่อความสวยและการผ่อนคลายในแบบของคุณ</p>
+      <p style="margin-top:14px; font-size:14.5px;" data-i18n="footer.tagline">บริการต่อขนตาและนวดแบบนัดหมายถึงที่ เพื่อความสวยและการผ่อนคลายในแบบของคุณ</p>
     </div>
     <div>
-      <h4>เมนู</h4>
+      <h4 data-i18n="footer.menu">เมนู</h4>
       <ul>
-        <li><a href="index.html">Home</a></li>
-        <li><a href="services.html">Services</a></li>
-        <li><a href="about.html">About</a></li>
-        <li><a href="contact.html">Contact</a></li>
+        <li><a href="index.html" data-i18n="nav.home">Home</a></li>
+        <li><a href="services.html" data-i18n="nav.menu">Our Menu</a></li>
+        <li><a href="about.html" data-i18n="nav.about">About</a></li>
+        <li><a href="contact.html" data-i18n="nav.contact">Contact</a></li>
       </ul>
     </div>
     <div>
-      <h4>บริการ</h4>
+      <h4 data-i18n="footer.servicesHead">บริการ</h4>
       <ul>
-        <li><a href="services.html">ต่อขนตา</a></li>
-        <li><a href="services.html">นวดผ่อนคลาย</a></li>
-        <li><a href="status.html">ตรวจสอบสถานะ</a></li>
+        <li><a href="services.html" data-i18n="footer.lash">ต่อขนตา</a></li>
+        <li><a href="services.html" data-i18n="footer.massage">นวดผ่อนคลาย</a></li>
+        <li><a href="status.html" data-i18n="footer.checkStatus">ตรวจสอบสถานะ</a></li>
       </ul>
     </div>
     <div>
-      <h4>ติดต่อ</h4>
+      <h4 data-i18n="footer.contactHead">ติดต่อ</h4>
       <ul>
         <li>โทร: <a href="tel:0986545684">0986545684</a></li>
-        <li>LINE: ยังไม่มีช่องทางนี้</li>
+        <li data-i18n="footer.lineNA">LINE: ยังไม่มีช่องทางนี้</li>
         <li>Facebook: <a href="https://www.facebook.com/people/THD-Beauty-Studio/61593494246633/" target="_blank" rel="noopener">THD Beauty Studio</a></li>
-        <li>เวลาทำการ: นัดหมายล่วงหน้า</li>
+        <li data-i18n="footer.hours">เวลาทำการ: นัดหมายล่วงหน้า</li>
       </ul>
     </div>
   </div>
   <div class="footer-bottom">
-    <div class="container">© <span class="year"></span> THD. BEAUTY STUDIO — ต่อขนตา &amp; นวด นัดหมายถึงที่</div>
+    <div class="container">© <span class="year"></span> <span data-i18n="footer.copy">THD. BEAUTY STUDIO — ต่อขนตา &amp; นวด นัดหมายถึงที่</span></div>
   </div>
 </footer>
 
 <script src="js/config.js"></script>
+<script src="js/i18n.js"></script>
 <script src="js/main.js"></script>
 <script>
 document.addEventListener("DOMContentLoaded", () => {
@@ -174,9 +178,9 @@ document.addEventListener("DOMContentLoaded", () => {
     const phone = $("#cPhone").value.trim();
     const msg = $("#cMsg").value.trim();
 
-    if (!name) { error.textContent = "กรุณากรอกชื่อ"; error.classList.add("show"); return; }
-    if (!/^0\d{8,9}$/.test(phone)) { error.textContent = "กรุณากรอกเบอร์โทรศัพท์ให้ถูกต้อง"; error.classList.add("show"); return; }
-    if (!msg) { error.textContent = "กรุณากรอกข้อความ"; error.classList.add("show"); return; }
+    if (!name) { error.textContent = t("contact.errName"); error.classList.add("show"); return; }
+    if (!/^0\d{8,9}$/.test(phone)) { error.textContent = t("contact.errPhone"); error.classList.add("show"); return; }
+    if (!msg) { error.textContent = t("contact.errMsg"); error.classList.add("show"); return; }
 
     try {
       await apiCall("contactMessage", {
@@ -186,6 +190,7 @@ document.addEventListener("DOMContentLoaded", () => {
         message: msg,
       });
       form.reset();
+      success.textContent = t("contact.successMsg");
       success.classList.add("show");
     } catch (err) {
       error.textContent = err.message;
